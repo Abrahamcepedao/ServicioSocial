@@ -65,6 +65,7 @@ export default function Users() {
       maiil: "",
       name: "",
       passsword: "",
+      phone: "",
       type: "student"
     })
 
@@ -73,8 +74,8 @@ export default function Users() {
         matricula: "",
         mail: "",
         carrera: "",
-        semestre: 0,
-        horas: 0
+        semestre: "",
+        horas: ""
     })
 
     //useState - partner
@@ -92,6 +93,15 @@ export default function Users() {
       severity: "error",
       collapse: false
     })
+
+    /* handle alert close */
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setUtils({...utils, open: false});
+    };
 
     /* const handle input change */
      /* handle input change */
@@ -159,22 +169,60 @@ export default function Users() {
 
       if(verifyForm()) {
         if(formData.type === "student") {
-            await createStudent(
+            const res = await createStudent(
               formData.maiil,
+              formData.phone,
               formData.name,
-              student.mail,
+              student.matricula,
               student.carrera,
-              student.semestre,
-              student.horas
+              Number(student.semestre),
+              Number(student.horas)
             )
+            if(res) {
+              setUtils({
+                ...utils,
+                open: true,
+                severity: 'success',
+                message: "Se registró el alumno exitosamente",
+                collapse: false
+              })
+            } else {
+              setUtils({
+                ...utils,
+                open: true,
+                severity: 'error',
+                message: "Error al registrar alumno. Inténtelo de nuevo.",
+                collapse: false
+              })
+            }
         } else {
-            await createPartner(
+            const res = await createPartner(
               formData.maiil,
+              formData.phone,
               formData.name,
               partner.company,
               partner.key,
-              partner.file
+              partner.file,
+              partner.fileName
             )
+
+            if(res) {
+              setUtils({
+                ...utils,
+                open: true,
+                severity: 'success',
+                message: "Se registró la organización exitosamente",
+                collapse: false,
+              })
+            } else {
+              setUtils({
+                ...utils,
+                open: true,
+                severity: 'error',
+                message: "Error al registrar organización. Inténtelo de nuevo.",
+                collapse: false
+              })
+            }
         }
       }
     }
@@ -220,7 +268,7 @@ export default function Users() {
               {/* add user */}
               <Collapse in={utils.collapse}>
                 <div className='max-w-5xl m-auto mt-10'>
-                  <form>
+                  <form onSubmit={(e) => {handleCreateUser(e)}}>
                     <div className='grid grid-cols-3 gap-4 mb-8 items-center'>
 
                       {/* user type */}
@@ -256,6 +304,17 @@ export default function Users() {
                           name='name' placeholder='Ingrese su nombre'
                           autoComplete='off'
                           value={formData.name} onChange={(e) => {handleInputChange(e)}}
+                          className="input"
+                        />
+                      </div>
+
+                      {/* phone */}
+                      <div className='input__container '>
+                        <LocalPhoneRoundedIcon/>
+                        <input 
+                          name='phone' placeholder='Ingrese su teléfono'
+                          autoComplete='off'
+                          value={formData.phone} onChange={(e) => {handleInputChange(e)}}
                           className="input"
                         />
                       </div>
@@ -376,6 +435,14 @@ export default function Users() {
               </Collapse>
               
             </div>
+
+            {/* alert */}
+            <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
+              {/* @ts-ignore */}
+              <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
+                {utils.message}
+              </Alert>
+            </Snackbar>
         </main>
       </>
     )

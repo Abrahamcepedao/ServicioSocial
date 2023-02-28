@@ -169,6 +169,7 @@ export default function SignUp() {
               </form>
           </div>
 
+          {/* alert */}
           <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
             {/* @ts-ignore */}
             <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>

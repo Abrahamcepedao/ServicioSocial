@@ -17,18 +17,16 @@ import LogoW from '../../../public/logo_w.png'
 import { IconButton, Tooltip } from '@mui/material'
 
 //Material UI - icons
-import MapsHomeWorkRoundedIcon from '@mui/icons-material/MapsHomeWorkRounded';
-import MapsHomeWorkOutlinedIcon from '@mui/icons-material/MapsHomeWorkOutlined';
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded';
-import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
-import StickyNote2RoundedIcon from '@mui/icons-material/StickyNote2Rounded';
-import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
 import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
+import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 
 //components
 import MenuMobile from './MenuMobile'
@@ -43,7 +41,7 @@ const SideBar = () => {
     const { theme } = useTheme()
 
     //context
-    const { logout } = useAuth()
+    const { logout, user } = useAuth()
 
 
     return (
@@ -65,19 +63,54 @@ const SideBar = () => {
                         )}
                         <p className="">Inicio</p>
                     </Link>
-                    <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/admin/users" style={{background: router.pathname.includes('/users') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/users') ? 1 : 0.5}}>
-                        {router.pathname.includes('/users') ? (
-                            <PeopleRoundedIcon className="sidebar__icon"/>
+                    {user.type === "admin" && (
+                        <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/admin/users" style={{background: router.pathname.includes('/users') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/users') ? 1 : 0.5}}>
+                            {router.pathname.includes('/users') ? (
+                                <PeopleRoundedIcon className="sidebar__icon"/>
+                            ) : (
+                                <PeopleAltOutlinedIcon className="sidebar__icon"/>
+                            )}
+                            <p className="">Usuarios</p>
+                        </Link>
+                    )}
+
+                    <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/student/oferta" style={{background: router.pathname.includes('/oferta') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/oferta') ? 1 : 0.5}}>
+                        {router.pathname.includes('/oferta') ? (
+                            <AccountTreeRoundedIcon className="sidebar__icon"/>
                         ) : (
-                            <PeopleAltOutlinedIcon className="sidebar__icon"/>
+                            <AccountTreeOutlinedIcon className="sidebar__icon"/>
                         )}
-                        <p className="">Usuarios</p>
+                        <p className="">Oferta</p>
                     </Link>
+
+                    {user.type === "partner" && (
+                        <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/partner/projects" style={{background: router.pathname.includes('/projects') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/projects') ? 1 : 0.5}}>
+                            {router.pathname.includes('/projects') ? (
+                                <DashboardRoundedIcon className="sidebar__icon"/>
+                            ) : (
+                                <DashboardOutlinedIcon className="sidebar__icon"/>
+                            )}
+                            <p className="">Proyectos</p>
+                        </Link>
+                    )}
+                    
                 </div>
 
 
                 {/*  */}
                 <div>
+                    <Link href={"/settings"}>
+                        <Tooltip title="Ajustes" placement='top'>
+                            <IconButton>
+                                <SettingsRoundedIcon className="sidebar__icon text-black dark:text-white"/>
+                            </IconButton>
+                        </Tooltip>
+                    </Link>
+                    <Tooltip title="Cerrar sesión" placement='top'>
+                        <IconButton onClick={logout}>
+                            <LogoutRoundedIcon className="sidebar__icon text-black dark:text-white"/>
+                        </IconButton>
+                    </Tooltip>
                     <ThemeToggler/>
                 </div>
 
