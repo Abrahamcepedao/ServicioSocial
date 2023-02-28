@@ -1,6 +1,33 @@
-import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 
+//CSS
+import '@/styles/globals.css'
+import { ThemeProvider } from 'next-themes'
+
+
+//Context
+import { AuthContextProvider } from '../context/AuthContext'
+
+//Routers
+import { useRouter } from 'next/router'
+import ProtectedRoute from '../components/auth/ProtectedRoute'
+
+const noAuthRequired:string[] = ['/', '/login', '/signup']
+
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  const router = useRouter()
+
+  return (
+    <AuthContextProvider>
+      <ThemeProvider attribute="class" enableSystem={true}>
+        {noAuthRequired.includes(router.pathname) ? (
+            <Component {...pageProps}/>
+        ) : (
+          <ProtectedRoute>
+            <Component {...pageProps}/>
+          </ProtectedRoute>
+        )}
+      </ThemeProvider>
+    </AuthContextProvider>
+  )
 }
