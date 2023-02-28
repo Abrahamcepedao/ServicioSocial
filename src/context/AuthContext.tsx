@@ -7,7 +7,7 @@ import {
 from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { auth } from '../database/firebase'
-import { addUser, getUser } from '../database/funtions/auth'
+import { addUser, getUser, addStudent, signedUpStudent, addPartner, signedUpPartner } from '../database/funtions/auth'
 
 const AuthContext = createContext<any>({})
 
@@ -20,7 +20,8 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(user){
-                const temp = await getUser(user.uid)
+                console.log(user)
+                const temp = await getUser(user.email)
                 
                 setUser(temp)
             } else {
@@ -48,12 +49,37 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         })
     }
 
+    const signupStudent = async(mail:string, password:string, matricula:string) => {
+        return await createUserWithEmailAndPassword(auth, mail, password).then(async (result) => {
+            //get student and set data
+            const res = await signedUpStudent(matricula)
+            if(res !== false) {
+                setUser(res)
+            } else {
+                return false
+            }
+        })
+    }
+
+    const signupPartner = async(mail:string, password:string, key:string) => {
+        return await createUserWithEmailAndPassword(auth, mail, password).then(async (result) => {
+            //get student and set data
+            const res = await signedUpPartner(key)
+            if(res !== false) {
+                setUser(res)
+            } else {
+                return false
+            }
+        })
+    }
+
+
 
 
     const login = async (mail:string, password:string) => {
         return signInWithEmailAndPassword(auth, mail, password)
             .then(async (result) => {
-                const item = await getUser(result.user.uid)
+                const item = await getUser(mail)
                 console.log(item)
                 setUser(item)
             })
@@ -64,35 +90,42 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         await signOut(auth)
     }
 
-    const createStudent = async (mail:string, name:string, matricula:string, carrera:string, semestre:number, horas: number) => {
+    const createStudent = async (mail:string, phone:string, name:string, matricula:string, carrera:string, semestre:number, horas: number) => {
         const temp = {
             uid: matricula,
             mail,
+            phone,
             name,
             carrera,
             semestre,
             horas,
             type: "student"
         }
-        
-        addUser(temp)
+        console.log(temp)
+        const res = await addStudent(temp)
+        console.log(res)
+        return res
     }
 
-    const createPartner = async (mail:string, name:string, company:string, key:string, file:File, fileName:string) => {
+    const createPartner = async (mail:string, phone:string, name:string, company:string, key:string, file:File, fileName:string) => {
         const temp = {
             uid: key,
             mail,
+            phone,
             name,
             key,
+            company,
             file,
             fileName,
             type: "partner"
         }
         
-        addUser(temp)
+        const res = await addPartner(temp)
+        console.log(res)
+        return res
     }
 
-    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner}}>
+    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, signupStudent, signupPartner}}>
         {loading ? null : children}
     </AuthContext.Provider>
 }

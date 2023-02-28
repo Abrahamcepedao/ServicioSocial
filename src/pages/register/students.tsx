@@ -13,14 +13,13 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 //Material UI - icons
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
 
 //CSS
 import styles from '@/styles/Home.module.css'
 
 //Assets
-import Logo from '../../public/logo.png'
+import Logo from '../../../public/logo.png'
 
 //Components
 import ThemeToggler from '@/components/global/ThemeToggler';
@@ -36,17 +35,20 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Login() {
+export default function Students() {
     //context
-    const { user, login } = useAuth()
+    const { user, signupStudent } = useAuth()
 
-    //router
+    //Router
     const router = useRouter()
 
     //useState - formData
     const [formData, setFormData] = useState({
-      maiil: "",
-      passsword: "",
+      mail: "",
+      matricula: "",
+      password: "",
+      confirmPassword: "",
+      type: "student" //admin, user, socio
     })
 
     //useState - alert open
@@ -59,16 +61,9 @@ export default function Login() {
     //useEffect
     useEffect(() => {
         if(user !== null && user !== undefined) {
-            if(user.type === "student") {
-              router.push('/student/dashboard')
-            } else if(user.type === "admin") {
-              router.push('/admin/dashboard')
-            } else {
-              router.push('/partner/dashboard')
-            }
-            
+            router.push('/student/dashboard')
         }
-    },[user])
+    },[]) 
 
     /* handle alert close */
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -79,7 +74,6 @@ export default function Login() {
       setUtils({...utils, open: false});
     };
 
-    /* handle input change */
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
       setFormData({
         ...formData,
@@ -89,20 +83,25 @@ export default function Login() {
 
     /* verify and validate form data */
     const verifyForm = () => {
+      if(formData.password !== formData.confirmPassword) {
+        setUtils({
+          ...utils,
+          open: true,
+          message: "Las contraseñas deben coincidir",
+          severity: "error"
+        })
+        return false
+      }
       //validate mail
-
-      //validate phone
-
-      //validate name
 
       return true
     }
 
     /* handle sign up */
-    const handleLogin = (e:React.FormEvent<HTMLFormElement>) => {
+    const handleSignUp = (e:React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if(verifyForm()) {
-        login(formData.maiil, formData.passsword)
+        signupStudent(formData.mail, formData.password, formData.matricula)
       }
     }
 
@@ -120,37 +119,55 @@ export default function Login() {
                 <Image src={Logo} width={200} height={140} alt="Servicio Social"/>
                 <ThemeToggler />
               </div>
-              <form onSubmit={(e) => {handleLogin(e)}} className="flex-1" autoComplete='off'>
+              <form onSubmit={(e) => {handleSignUp(e)}} className="flex-1" autoComplete='off'>
                   <div className='grid grid-cols-2 gap-4 mb-8'>
                       <div className='input__container '>
                         <EmailRoundedIcon/>
                         <input 
-                          name='maiil' placeholder='Ingrese su mail'
+                          name='mail' placeholder='Ingrese su mail'
                           autoComplete='off'
-                          value={formData.maiil} onChange={(e) => {handleInputChange(e)}}
+                          value={formData.mail} onChange={(e) => {handleInputChange(e)}}
                           className="input"
                         />
                       </div>
-                      
+                      <div className='input__container '>
+                          <PersonRoundedIcon/>
+                          <input 
+                            name='matricula' placeholder='Ingrese su matrícula'
+                            autoComplete='off'
+                            value={formData.matricula} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
                       <div className='input__container '>
                         <LockRoundedIcon/>
                         <input 
-                          name='passsword' placeholder='Ingrese su contraseña'
+                          name='password' placeholder='Ingrese su contraseña'
                           type="password" autoComplete='new-password'
-                          value={formData.passsword} onChange={(e) => {handleInputChange(e)}}
+                          value={formData.password} onChange={(e) => {handleInputChange(e)}}
+                          className="input"
+                        />
+                      </div>
+                      <div className='input__container '>
+                        <LockRoundedIcon/>
+                        <input 
+                          name='confirmPassword' placeholder='Confirme su contraseña'
+                          type="password" autoComplete='new-password'
+                          value={formData.confirmPassword} onChange={(e) => {handleInputChange(e)}}
                           className="input"
                         />
                       </div>
                   </div>
                   
                   <div className='text-center'>
-                    <button className='button bg-primary text-white' type='submit'>Iniciar sesión</button>
-                    <p className='mt-10'>¿No tienes cuenta?<a href='/signup' className='text-primary underline'> Regístrate</a></p>
+                    <button className='button bg-primary text-white' type='submit'>Registrarse</button>
+                    <p className='mt-10'>¿Ya tienes cuenta?<a href='/login' className='text-primary underline'> Inicia sesión</a></p>
                   </div>
                   
               </form>
           </div>
 
+          {/* alert */}
           <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
             {/* @ts-ignore */}
             <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
