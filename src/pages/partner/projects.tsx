@@ -9,12 +9,20 @@ import React, { useState, useEffect } from 'react'
 //Material UI
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { IconButton, Collapse, Tooltip } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
 
 //Material UI - icons
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import DashboardCustomizeRoundedIcon from '@mui/icons-material/DashboardCustomizeRounded';
 
 //CSS
 import styles from '@/styles/Home.module.css'
@@ -27,6 +35,9 @@ import SideBar from '@/components/global/Sidebar';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
+
+//data
+import carreras from '@/utils/constants/carreras';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -45,17 +56,49 @@ export default function Projects() {
 
     //useState - formData
     const [formData, setFormData] = useState({
-      maiil: "",
-      passsword: "",
+      name: "",
+      key: "",
+      group: "",
+      crn: "",
+      duration: "",
+      hours: "",
+      inscription: "",
+      availability: "",
+      carreras: [],
+      modality: "",
+      location: ""
     })
 
     //useState - alert open
     const [utils, setUtils] = useState({
       open: false,
       message: "",
-      severity: "error"
+      severity: "error",
+      collapse: false
     })
 
+    /* handle alert close */
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setUtils({...utils, open: false});
+    };
+
+
+    /* handle input change */
+    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+      setFormData({
+        ...formData,
+        [e.target.name] : e.target.value
+      })
+    }
+
+    /* handle create project */
+    const handleCreateProject = async (e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+    }
 
     return (
       <>
@@ -67,9 +110,165 @@ export default function Projects() {
         </Head>
         <main className=''>
             <SideBar/>
-            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-primary lg:left-44 relative p-10'>
-              <h1>Projects - partner</h1>
+            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-10'>
+                {/* header */}
+                <div className='flex justify-between items-center max-w-5xl m-auto mt-10'>
+                    <h2 className='title text-dark dark:text-light flex-1'>Edita las experiencias</h2>
+                    <div className='flex justify-end items-center'>
+                    <div className='filter__container'>
+                        <SearchRoundedIcon/>
+                        <input placeholder='Busca un usuario' className='filter__input'/>
+                    </div>
+
+                    {utils.collapse ? (
+                        <Tooltip title="Cerrar" placement='top'>
+                        <IconButton onClick={() => {setUtils({...utils, collapse: false})}}>
+                            <CancelRoundedIcon className='text-black dark:text-white'/>
+                        </IconButton>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip title="Agregar usuario" placement='top'>
+                        <IconButton onClick={() => {setUtils({...utils, collapse: true})}}>
+                            <DashboardCustomizeRoundedIcon className='text-black dark:text-white'/>
+                        </IconButton>
+                        </Tooltip>
+                    )}
+                    </div>
+                </div>
+
+                {/* add project */}
+                <Collapse in={utils.collapse}>
+                    <div className='max-w-5xl m-auto mt-10'>
+                        <form onSubmit={(e) => {handleCreateProject(e)}}>
+                            <div className='grid grid-cols-3 gap-4 mb-8 items-center'>
+                                {/* name */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='name' placeholder='Nombre de experiencia'
+                                    autoComplete='off'
+                                    value={formData.name} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* key */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='name' placeholder='Clave'
+                                    autoComplete='off'
+                                    value={formData.key} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* group */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='group' placeholder='Clave del grupo'
+                                    autoComplete='off'
+                                    value={formData.group} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* crn */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='crn' placeholder='CRN'
+                                    autoComplete='off'
+                                    value={formData.crn} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* duration (select)*/}
+                                <div className='input__container '>
+                                    <input 
+                                    name='duration' placeholder='Duración'
+                                    autoComplete='off'
+                                    value={formData.duration} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* hours */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='hours' placeholder='Horas a acreditar'
+                                    autoComplete='off'
+                                    value={formData.hours} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* incripcion */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='inscripcion' placeholder='Tipo de inscripción'
+                                    autoComplete='off'
+                                    value={formData.inscription} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* availability */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='availability' placeholder='Cupo de experiencia'
+                                    autoComplete='off'
+                                    value={formData.availability} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* Carreras */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='carreras' placeholder='Carreras aceptadas'
+                                    autoComplete='off'
+                                    value={formData.carreras} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* modality */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='modality' placeholder='Modalidad de experiencia'
+                                    autoComplete='off'
+                                    value={formData.modality} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                                {/* Ubicación */}
+                                <div className='input__container '>
+                                    <input 
+                                    name='location' placeholder='Ubicación de experiencia'
+                                    autoComplete='off'
+                                    value={formData.location} onChange={(e) => {handleInputChange(e)}}
+                                    className="input"
+                                    />
+                                </div>
+
+                            </div>
+                            <div className='text-center'>
+                                <button className='button bg-primary text-white' type='submit'>Registrar experiencia</button>
+                            </div>
+                        </form>
+                    </div>
+                </Collapse>
+                
+
             </div>
+
+            {/* alert */}
+            <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
+              {/* @ts-ignore */}
+              <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
+                {utils.message}
+              </Alert>
+            </Snackbar>
         </main>
       </>
     )
