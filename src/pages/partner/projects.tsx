@@ -31,15 +31,13 @@ import DashboardCustomizeRoundedIcon from '@mui/icons-material/DashboardCustomiz
 //CSS
 import styles from '@/styles/Home.module.css'
 
-//Assets
-import Logo from '../../public/logo.png'
-
 //Components
 import SideBar from '@/components/global/Sidebar';
 import { TransparentInput } from '@/components/global/Select';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
+import { useProjects } from '@/context/ProjectsContext';
 
 //data
 import carreras from '@/utils/constants/carreras';
@@ -48,6 +46,9 @@ import duration from '@/utils/constants/duration';
 import hours from '@/utils/constants/hours';
 import modalities from '@/utils/constants/modalities';
 import inscripcion from '@/utils/constants/inscripcion';
+
+//interfaces
+import Project from '@/utils/interfaces/Project.interface';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -82,13 +83,17 @@ const MenuProps = {
 
 export default function Projects() {
     //context
-    const { user, login } = useAuth()
+    const { user } = useAuth()
+    const { projects, addProject, getProjectsByOrg } = useProjects()
 
     //Material
     const theme = useTheme();
 
     //router
     const router = useRouter()
+
+    //useSTate
+    const [projectsList, setProjectsList] = useState([])
 
     //useState - formData
     const [formData, setFormData] = useState({
@@ -100,7 +105,6 @@ export default function Projects() {
       hours: "",
       inscription: "",
       availability: "",
-      carreras: [],
       modality: "",
       location: ""
     })
@@ -117,8 +121,22 @@ export default function Projects() {
 
     //useEffect
     useEffect(() => {
-      console.log(user)
+      //console.log(user)
+      if(user) {
+        fecthProjects()
+      }
     },[])
+
+
+    const fecthProjects = async () => {
+      const res = await getProjectsByOrg(user.company)
+        console.log(res)
+        if(res !== false) {
+          setProjectsList(res)
+        } else {
+          //do somehting
+        }
+    }
 
 
     /* handle alert close */
@@ -159,9 +177,68 @@ export default function Projects() {
       );
     };
 
+
+    const verifyForm = () => {
+      //check fields are not empty
+
+      return true
+    }
+
     /* handle create project */
     const handleCreateProject = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        //verify form
+        if(verifyForm()) {
+          let temp = {
+            name: formData.name,
+            key: formData.key,
+            group: formData.group,
+            crn: formData.crn,
+            hours: formData.hours,
+            inscripcion: formData.inscription,
+            availability: formData.availability,
+            carrerasList: carrerasList,
+            modality: formData.modality,
+            location: formData.location,
+            compay: user.company,
+            logoUrl: user.fileUrl,
+            uid: user.uid + "-" + Date.now()
+          }
+          
+          const res = await addProject(temp)
+          if(res) {
+            //resete form
+            setFormData({
+              name: "",
+              key: "",
+              group: "",
+              crn: "",
+              duration: "",
+              hours: "",
+              inscription: "",
+              availability: "",
+              modality: "",
+              location: ""
+            })
+            setCarrerasList([])
+            setUtils({
+                ...utils,
+                open: true,
+                severity: 'success',
+                message: "Projecto agregado exitosamente.",
+                collapse: false
+              })
+          } else {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: 'error',
+                message: "Error al registrar proyecto. Inténtelo de nuevo.",
+                collapse: false
+              })
+          }
+        }
     }
 
     return (
@@ -392,7 +469,7 @@ export default function Projects() {
                                       <MenuItem
                                         key={carrera}
                                         value={carrera}
-                                        style={getStyles(carrera, formData.carreras, theme)}
+                                        style={getStyles(carrera, carrerasList, theme)}
                                       >
                                         {carrera}
                                       </MenuItem>
@@ -436,6 +513,28 @@ export default function Projects() {
                     </div>
                 </Collapse>
                 
+
+                {/* table with projects */}
+                <div className='max-w-5xl m-auto'>
+                  <table className="table-auto w-full">
+                    <thead>
+                      <tr>
+                        <th>Experiencia</th>
+                        <th>Grupo</th>
+                        <th>CRN</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projectsList.length !== 0 && projectsList.map((project: Project, i) => (
+                        <tr key={i}>
+                          <td>{project.name}</td>
+                          <td>{project.group}</td>
+                          <td>{project.crn}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
             </div>
 

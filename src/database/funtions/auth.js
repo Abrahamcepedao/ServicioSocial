@@ -165,7 +165,7 @@ const getUser = async (mail) => {
         const q = query(usersRef, where("mail", "==", mail))
         const snapshot = await getDocs(q)
         let data = null
-        console.log(snapshot)
+        //console.log(snapshot)
         snapshot.docs.forEach((item) => {
 
             if(item.exists) {
