@@ -8,12 +8,16 @@ import React, { useState, useEffect } from 'react'
 
 //Material UI
 import Snackbar from '@mui/material/Snackbar';
+import { Theme, useTheme } from '@mui/material/styles';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { IconButton, Collapse, Tooltip } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
 //Material UI - icons
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
@@ -32,12 +36,18 @@ import Logo from '../../public/logo.png'
 
 //Components
 import SideBar from '@/components/global/Sidebar';
+import { TransparentInput } from '@/components/global/Select';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
 
 //data
 import carreras from '@/utils/constants/carreras';
+import claves from '@/utils/constants/claves';
+import duration from '@/utils/constants/duration';
+import hours from '@/utils/constants/hours';
+import modalities from '@/utils/constants/modalities';
+import inscripcion from '@/utils/constants/inscripcion';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -47,9 +57,35 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+
+function getStyles(name: string, personName: readonly string[], theme: Theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+
+
 export default function Projects() {
     //context
     const { user, login } = useAuth()
+
+    //Material
+    const theme = useTheme();
 
     //router
     const router = useRouter()
@@ -68,6 +104,7 @@ export default function Projects() {
       modality: "",
       location: ""
     })
+    const [carrerasList, setCarrerasList] = useState<string[]>([]);
 
     //useState - alert open
     const [utils, setUtils] = useState({
@@ -76,6 +113,13 @@ export default function Projects() {
       severity: "error",
       collapse: false
     })
+
+
+    //useEffect
+    useEffect(() => {
+      console.log(user)
+    },[])
+
 
     /* handle alert close */
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -95,6 +139,26 @@ export default function Projects() {
       })
     }
 
+    /* handle select change */
+    const handleSelectChange = (e:SelectChangeEvent<string>) => {
+      console.log(e.target.value)
+      setFormData({
+        ...formData,
+        [e.target.name] : e.target.value
+      })
+    }
+
+    /* handle carreras change */
+    const handleCarrerasChange = (event: SelectChangeEvent<typeof carrerasList>) => {
+      const {
+        target: { value },
+      } = event;
+      setCarrerasList(
+        // On autofill we get a stringified value.
+        typeof value === 'string' ? value.split(',') : value
+      );
+    };
+
     /* handle create project */
     const handleCreateProject = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -110,8 +174,8 @@ export default function Projects() {
         </Head>
         <main className=''>
             <SideBar/>
-            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-10'>
-                {/* header */}
+            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-4 md:p-10 pb-20'>
+                {/* header */} 
                 <div className='flex justify-between items-center max-w-5xl m-auto mt-10'>
                     <h2 className='title text-dark dark:text-light flex-1'>Edita las experiencias</h2>
                     <div className='flex justify-end items-center'>
@@ -140,9 +204,9 @@ export default function Projects() {
                 <Collapse in={utils.collapse}>
                     <div className='max-w-5xl m-auto mt-10'>
                         <form onSubmit={(e) => {handleCreateProject(e)}}>
-                            <div className='grid grid-cols-3 gap-4 mb-8 items-center'>
+                            <div className='grid grid-cols-1 gap-4 mb-8 items-end sm:grid-cols-2 md:grid-cols-3 opacity-75'>
                                 {/* name */}
-                                <div className='input__container '>
+                                <div className='input__container !border:gray'>
                                     <input 
                                     name='name' placeholder='Nombre de experiencia'
                                     autoComplete='off'
@@ -151,15 +215,6 @@ export default function Projects() {
                                     />
                                 </div>
 
-                                {/* key */}
-                                <div className='input__container '>
-                                    <input 
-                                    name='name' placeholder='Clave'
-                                    autoComplete='off'
-                                    value={formData.key} onChange={(e) => {handleInputChange(e)}}
-                                    className="input"
-                                    />
-                                </div>
 
                                 {/* group */}
                                 <div className='input__container '>
@@ -181,32 +236,12 @@ export default function Projects() {
                                     />
                                 </div>
 
-                                {/* duration (select)*/}
+                                {/* Ubicación */}
                                 <div className='input__container '>
                                     <input 
-                                    name='duration' placeholder='Duración'
+                                    name='location' placeholder='Ubicación de experiencia'
                                     autoComplete='off'
-                                    value={formData.duration} onChange={(e) => {handleInputChange(e)}}
-                                    className="input"
-                                    />
-                                </div>
-
-                                {/* hours */}
-                                <div className='input__container '>
-                                    <input 
-                                    name='hours' placeholder='Horas a acreditar'
-                                    autoComplete='off'
-                                    value={formData.hours} onChange={(e) => {handleInputChange(e)}}
-                                    className="input"
-                                    />
-                                </div>
-
-                                {/* incripcion */}
-                                <div className='input__container '>
-                                    <input 
-                                    name='inscripcion' placeholder='Tipo de inscripción'
-                                    autoComplete='off'
-                                    value={formData.inscription} onChange={(e) => {handleInputChange(e)}}
+                                    value={formData.location} onChange={(e) => {handleInputChange(e)}}
                                     className="input"
                                     />
                                 </div>
@@ -221,35 +256,177 @@ export default function Projects() {
                                     />
                                 </div>
 
+                                {/* key */}
+                                <FormControl className="w-full m-0">
+                                  <label className='mb-2'>Claves</label>
+                                  <Select
+                                    className='!border-black dark:!text-white'
+                                    value={formData.key}
+                                    name="key"
+                                    onChange={(e) => {handleSelectChange(e)}}
+                                    label="Carreras"
+                                    input={<TransparentInput className='!outline-none'/>}
+                                    inputProps={{
+                                        classes: {
+                                            icon: "!text-black dark:!text-white"
+                                        }
+                                    }}
+                                  >
+                                    {claves.map((key) => (
+                                      <MenuItem
+                                        key={key}
+                                        value={key}
+                                      >
+                                        {key}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+
+                                {/* duration (select)*/}
+                                <FormControl className="w-full m-0">
+                                  <label className='mb-2'>Duración</label>
+                                  <Select
+                                    className='!border-black dark:!text-white'
+                                    value={formData.duration}
+                                    name="duration"
+                                    onChange={(e) => {handleSelectChange(e)}}
+                                    label="Carreras"
+                                    input={<TransparentInput className='!outline-none'/>}
+                                    inputProps={{
+                                        classes: {
+                                            icon: "!text-black dark:!text-white"
+                                        }
+                                    }}
+                                  >
+                                    {duration.map((item, i) => (
+                                      <MenuItem
+                                        key={i}
+                                        value={item}
+                                      >
+                                        {item}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+
+                                {/* hours */}
+                                <FormControl className="w-full m-0">
+                                  <label className='mb-2'>Horas a acreditar</label>
+                                  <Select
+                                    className='!border-black dark:!text-white'
+                                    value={formData.hours}
+                                    name="hours"
+                                    onChange={(e) => {handleSelectChange(e)}}
+                                    input={<TransparentInput className='!outline-none'/>}
+                                    inputProps={{
+                                        classes: {
+                                            icon: "!text-black dark:!text-white"
+                                        }
+                                    }}
+                                  >
+                                    {hours.map((key,i) => (
+                                      <MenuItem
+                                        key={i}
+                                        value={key}
+                                      >
+                                        Hasta {key}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+
+                                {/* incripcion */}
+                                <FormControl className="w-full m-0">
+                                  <label className='mb-2'>Tipo de inscripción</label>
+                                  <Select
+                                    className='!border-black dark:!text-white'
+                                    value={formData.inscription}
+                                    name="inscription"
+                                    onChange={(e) => {handleSelectChange(e)}}
+                                    input={<TransparentInput className='!outline-none'/>}
+                                    inputProps={{
+                                        classes: {
+                                            icon: "!text-black dark:!text-white"
+                                        }
+                                    }}
+                                  >
+                                    {inscripcion.map((key,i) => (
+                                      <MenuItem
+                                        key={i}
+                                        value={key}
+                                      >
+                                        Hasta {key}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+
                                 {/* Carreras */}
-                                <div className='input__container '>
-                                    <input 
-                                    name='carreras' placeholder='Carreras aceptadas'
-                                    autoComplete='off'
-                                    value={formData.carreras} onChange={(e) => {handleInputChange(e)}}
-                                    className="input"
-                                    />
-                                </div>
+                                <FormControl className="w-full m-0">
+                                  <label className='mb-2'>Carreras</label>
+                                  <Select
+                                    labelId="demo-multiple-chip-label"
+                                    id="demo-multiple-chip"
+                                    className='!border-black'
+                                    multiple
+                                    value={carrerasList}
+                                    onChange={handleCarrerasChange}
+                                    label="Carreras"
+                                    input={<TransparentInput id="select-multiple-chip" className='!outline-none'/>}
+                                    inputProps={{
+                                        classes: {
+                                            icon: "!text-black dark:!text-white"
+                                        }
+                                    }}
+                                    renderValue={(selected) => (
+                                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => (
+                                          <Chip key={value} label={value} className="!text-black dark:!text-white !border-2 !border-primary !border-solid" />
+                                        ))}
+                                      </Box>
+                                    )}
+                                    MenuProps={MenuProps}
+                                  >
+                                    {carreras.map((carrera) => (
+                                      <MenuItem
+                                        key={carrera}
+                                        value={carrera}
+                                        style={getStyles(carrera, formData.carreras, theme)}
+                                      >
+                                        {carrera}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
 
                                 {/* modality */}
-                                <div className='input__container '>
-                                    <input 
-                                    name='modality' placeholder='Modalidad de experiencia'
-                                    autoComplete='off'
-                                    value={formData.modality} onChange={(e) => {handleInputChange(e)}}
-                                    className="input"
-                                    />
-                                </div>
+                                <FormControl className="w-full m-0">
+                                  <label className='mb-2'>Modalidad</label>
+                                  <Select
+                                    className='!border-black dark:!text-white'
+                                    value={formData.modality}
+                                    name="modality"
+                                    onChange={(e) => {handleSelectChange(e)}}
+                                    input={<TransparentInput className='!outline-none'/>}
+                                    inputProps={{
+                                        classes: {
+                                            icon: "!text-black dark:!text-white"
+                                        }
+                                    }}
+                                  >
+                                    {modalities.map((item, i) => (
+                                      <MenuItem
+                                        key={i}
+                                        value={item}
+                                      >
+                                        {item}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
 
-                                {/* Ubicación */}
-                                <div className='input__container '>
-                                    <input 
-                                    name='location' placeholder='Ubicación de experiencia'
-                                    autoComplete='off'
-                                    value={formData.location} onChange={(e) => {handleInputChange(e)}}
-                                    className="input"
-                                    />
-                                </div>
+                                
 
                             </div>
                             <div className='text-center'>
