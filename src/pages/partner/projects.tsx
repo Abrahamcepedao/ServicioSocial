@@ -13,20 +13,15 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { IconButton, Collapse, Tooltip } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 
 //Material UI - icons
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import DashboardCustomizeRoundedIcon from '@mui/icons-material/DashboardCustomizeRounded';
+import { CreateRounded, DeleteRounded } from '@mui/icons-material';
 
 //CSS
 import styles from '@/styles/Home.module.css'
@@ -49,6 +44,7 @@ import inscripcion from '@/utils/constants/inscripcion';
 
 //interfaces
 import Project from '@/utils/interfaces/Project.interface';
+
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -515,21 +511,34 @@ export default function Projects() {
                 
 
                 {/* table with projects */}
-                <div className='max-w-5xl m-auto'>
-                  <table className="table-auto w-full">
+                <div className='max-w-5xl m-auto mt-8'>
+                  <table className="table-auto w-full text-left">
                     <thead>
                       <tr>
                         <th>Experiencia</th>
                         <th>Grupo</th>
                         <th>CRN</th>
+                        <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
                       {projectsList.length !== 0 && projectsList.map((project: Project, i) => (
-                        <tr key={i}>
+                        <tr key={i} className="bg-light-gray pl-4">
                           <td>{project.name}</td>
                           <td>{project.group}</td>
                           <td>{project.crn}</td>
+                          <td>
+                            <Tooltip title="Editar">
+                              <IconButton>
+                                <CreateRounded className='text-black dark:text-white hover:scale-110'/>
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Eliminar">
+                              <IconButton>
+                                <DeleteRounded className='text-black dark:text-white hover:scale-110'/>
+                              </IconButton>
+                            </Tooltip>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
