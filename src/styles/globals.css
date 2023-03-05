@@ -29,7 +29,7 @@ body {
 /* title */
 .title {
   font-weight: bold;
-  font-size: 25px;
+  font-size: 35px;
 }
 
 /* inputs */
@@ -109,4 +109,27 @@ body {
 /* icons */
 .sidebar__icon {
   margin-right: 5px;
+}
+
+
+/* Cusomize scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background: none;
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.25); 
+  border-radius: 10px;
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-corner {
+  background: none;
 }

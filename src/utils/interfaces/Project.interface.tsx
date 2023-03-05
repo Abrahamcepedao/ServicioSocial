@@ -6,12 +6,14 @@ interface Project {
     hours: string,
     inscripcion: string,
     availability: string,
+    duration: string,
     carrerasList: string[],
     modality: string,
     location: string,
-    compay: string,
+    company: string,
     logoUrl: string,
     uid: string,
+    isFav: boolean
 }
 
 export default Project

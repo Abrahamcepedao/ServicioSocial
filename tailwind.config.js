@@ -23,6 +23,10 @@ module.exports = {
       'terciary': '#6c969d',
       'gray': '#ced4da'
     },
+    minWidth: {
+      'xs': '40px',
+      'sm': '96px'
+    }
   },
   variants: {
     extend: {},
