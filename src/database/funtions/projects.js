@@ -23,7 +23,7 @@ const getProjectsOrg = async (org) => {
         const q = query(projectsRef, where("company", "==", org))
         const snapshot = await getDocs(q)
         let data = []
-        console.log(snapshot.docs)
+        
         snapshot.docs.forEach((item) => {
             console.log(item)
             if(item.exists) {
@@ -40,4 +40,22 @@ const getProjectsOrg = async (org) => {
     }
 }
 
-export { addProjectFirebase, getProjectsOrg }
+const getAllProjects = async () => {
+    try {
+        const snapshot = await getDocs(collection(db, 'projects'))
+
+        let data = []
+        snapshot.docs.forEach((item) => {
+            if(item.exists) {
+                data.push(item.data())
+            }
+        })
+
+        return data
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
+
+export { addProjectFirebase, getProjectsOrg, getAllProjects }

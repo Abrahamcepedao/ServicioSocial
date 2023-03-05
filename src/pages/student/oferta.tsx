@@ -8,13 +8,21 @@ import React, { useState, useEffect } from 'react'
 
 //Material UI
 import Snackbar from '@mui/material/Snackbar';
+import { Theme, useTheme } from '@mui/material/styles';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { IconButton, Collapse, Tooltip } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
 //Material UI - icons
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded';
 
 //CSS
 import styles from '@/styles/Home.module.css'
@@ -24,9 +32,24 @@ import Logo from '../../public/logo.png'
 
 //Components
 import SideBar from '@/components/global/Sidebar';
+import Project from '@/components/student/Project'
+import { TransparentInput } from '@/components/global/Select';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
+import { useProjects } from '@/context/ProjectsContext'
+
+//data
+import carreras from '@/utils/constants/carreras';
+import claves from '@/utils/constants/claves';
+import duration from '@/utils/constants/duration';
+import hours from '@/utils/constants/hours';
+import modalities from '@/utils/constants/modalities';
+import inscripcion from '@/utils/constants/inscripcion';
+
+//interfaces
+import ProjectInt from '@/utils/interfaces/Project.interface';
+
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -36,18 +59,122 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+function getStyles(name: string, personName: readonly string[], theme: Theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 export default function Oferta() {
     //context
     const { user } = useAuth()
+    const { projects, getProjects } = useProjects()
 
     //router
     const router = useRouter()
 
+    //Material UI
+    const theme = useTheme();
+
+    //useState projects
+    const [projectsList, setProjectsList] = useState([])
+
+    //useState - carreras
+    const [carrerasList, setCarrerasList] = useState<string[]>([]);
+
     //useState - formData
     const [formData, setFormData] = useState({
-      maiil: "",
-      passsword: "",
+      name: "",
+      key: "",
+      group: "",
+      crn: "",
+      duration: "",
+      hours: "",
+      inscription: "",
+      availability: "",
+      modality: "",
+      location: ""
     })
+
+    //useState - alert open
+    const [utils, setUtils] = useState({
+      open: false,
+      message: "",
+      severity: "error",
+      collapse: false,
+    })
+
+    //useEffecr
+    useEffect(() => {
+      if(projects.length !== 0) {
+        setProjectsList(projects)
+      } else {
+        fecthProjects()
+      }
+    })
+
+    /* get projects */
+    const fecthProjects = async() => {
+      const res = await getProjects()
+      
+      if(res !== false) {
+        setProjectsList(res)
+      } else {
+        //do something
+      }
+    }
+
+    /* handle alert close */
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setUtils({...utils, open: false});
+    };
+
+
+    /* handle input change */
+    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+      setFormData({
+        ...formData,
+        [e.target.name] : e.target.value
+      })
+    }
+
+    /* handle select change */
+    const handleSelectChange = (e:SelectChangeEvent<string>) => {
+      console.log(e.target.value)
+      setFormData({
+        ...formData,
+        [e.target.name] : e.target.value
+      })
+    }
+
+    /* handle carreras change */
+    const handleCarrerasChange = (event: SelectChangeEvent<typeof carrerasList>) => {
+      const {
+        target: { value },
+      } = event;
+      setCarrerasList(
+        // On autofill we get a stringified value.
+        typeof value === 'string' ? value.split(',') : value
+      );
+    };
 
 
     return (
@@ -60,8 +187,259 @@ export default function Oferta() {
         </Head>
         <main className=''>
             <SideBar/>
-            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-primary lg:left-44 relative p-10'>
-              <h1>Oferta</h1>
+            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-10'>
+              <div className='max-w-4xl m-auto'>
+
+                {/* title */}
+                <div className='flex justify-between items-center mb-10'>
+                  <h1 className='title'>Oferta</h1>
+                  <div>
+                    <IconButton onClick={() => {setUtils({...utils, collapse: !utils.collapse})}}>
+                      <FilterListRoundedIcon className='text-black dark:text-white'/>
+                    </IconButton>
+                  </div>
+                </div>
+                {/* filter */}
+                <Collapse in={utils.collapse}>
+                  <div className='mb-10'>
+                    <div className='grid grid-cols-1 gap-4 mb-8 items-end sm:grid-cols-2 md:grid-cols-3 opacity-75'>
+                      {/* name */}
+                      <div className='input__container !border:gray'>
+                          <input 
+                          name='name' placeholder='Nombre de experiencia'
+                          autoComplete='off'
+                          value={formData.name} onChange={(e) => {handleInputChange(e)}}
+                          className="input"
+                          />
+                      </div>
+
+
+                      {/* group */}
+                      <div className='input__container '>
+                          <input 
+                          name='group' placeholder='Clave del grupo'
+                          autoComplete='off'
+                          value={formData.group} onChange={(e) => {handleInputChange(e)}}
+                          className="input"
+                          />
+                      </div>
+
+                      {/* crn */}
+                      <div className='input__container '>
+                          <input 
+                          name='crn' placeholder='CRN'
+                          autoComplete='off'
+                          value={formData.crn} onChange={(e) => {handleInputChange(e)}}
+                          className="input"
+                          />
+                      </div>
+
+                      {/* Ubicación */}
+                      <div className='input__container '>
+                          <input 
+                          name='location' placeholder='Ubicación de experiencia'
+                          autoComplete='off'
+                          value={formData.location} onChange={(e) => {handleInputChange(e)}}
+                          className="input"
+                          />
+                      </div>
+
+                      {/* availability */}
+                      <div className='input__container '>
+                          <input 
+                          name='availability' placeholder='Cupo de experiencia'
+                          autoComplete='off'
+                          value={formData.availability} onChange={(e) => {handleInputChange(e)}}
+                          className="input"
+                          />
+                      </div>
+
+                      {/* key */}
+                      <FormControl className="w-full m-0">
+                        <label className='mb-2'>Claves</label>
+                        <Select
+                          className='!border-black dark:!text-white'
+                          value={formData.key}
+                          name="key"
+                          onChange={(e) => {handleSelectChange(e)}}
+                          label="Carreras"
+                          input={<TransparentInput className='!outline-none'/>}
+                          inputProps={{
+                              classes: {
+                                  icon: "!text-black dark:!text-white"
+                              }
+                          }}
+                        >
+                          {claves.map((key) => (
+                            <MenuItem
+                              key={key}
+                              value={key}
+                            >
+                              {key}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      {/* duration (select)*/}
+                      <FormControl className="w-full m-0">
+                        <label className='mb-2'>Duración</label>
+                        <Select
+                          className='!border-black dark:!text-white'
+                          value={formData.duration}
+                          name="duration"
+                          onChange={(e) => {handleSelectChange(e)}}
+                          input={<TransparentInput className='!outline-none'/>}
+                          inputProps={{
+                              classes: {
+                                  icon: "!text-black dark:!text-white"
+                              }
+                          }}
+                        >
+                          {duration.map((item, i) => (
+                            <MenuItem
+                              key={i}
+                              value={item}
+                            >
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      {/* hours */}
+                      <FormControl className="w-full m-0">
+                        <label className='mb-2'>Horas a acreditar</label>
+                        <Select
+                          className='!border-black dark:!text-white'
+                          value={formData.hours}
+                          name="hours"
+                          onChange={(e) => {handleSelectChange(e)}}
+                          input={<TransparentInput className='!outline-none'/>}
+                          inputProps={{
+                              classes: {
+                                  icon: "!text-black dark:!text-white"
+                              }
+                          }}
+                        >
+                          {hours.map((key,i) => (
+                            <MenuItem
+                              key={i}
+                              value={key}
+                            >
+                              Hasta {key}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      {/* incripcion */}
+                      <FormControl className="w-full m-0">
+                        <label className='mb-2'>Tipo de inscripción</label>
+                        <Select
+                          className='!border-black dark:!text-white'
+                          value={formData.inscription}
+                          name="inscription"
+                          onChange={(e) => {handleSelectChange(e)}}
+                          input={<TransparentInput className='!outline-none'/>}
+                          inputProps={{
+                              classes: {
+                                  icon: "!text-black dark:!text-white"
+                              }
+                          }}
+                        >
+                          {inscripcion.map((key,i) => (
+                            <MenuItem
+                              key={i}
+                              value={key}
+                            >
+                              Hasta {key}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      {/* Carreras */}
+                      <FormControl className="w-full m-0">
+                        <label className='mb-2'>Carreras</label>
+                        <Select
+                          labelId="demo-multiple-chip-label"
+                          id="demo-multiple-chip"
+                          className='!border-black'
+                          multiple
+                          value={carrerasList}
+                          onChange={handleCarrerasChange}
+                          label="Carreras"
+                          input={<TransparentInput id="select-multiple-chip" className='!outline-none'/>}
+                          inputProps={{
+                              classes: {
+                                  icon: "!text-black dark:!text-white"
+                              }
+                          }}
+                          renderValue={(selected) => (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {selected.map((value) => (
+                                <Chip key={value} label={value} className="!text-black dark:!text-white !border-2 !border-primary !border-solid" />
+                              ))}
+                            </Box>
+                          )}
+                          MenuProps={MenuProps}
+                        >
+                          {carreras.map((carrera) => (
+                            <MenuItem
+                              key={carrera}
+                              value={carrera}
+                              style={getStyles(carrera, carrerasList, theme)}
+                            >
+                              {carrera}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      {/* modality */}
+                      <FormControl className="w-full m-0">
+                        <label className='mb-2'>Modalidad</label>
+                        <Select
+                          className='!border-black dark:!text-white'
+                          value={formData.modality}
+                          name="modality"
+                          onChange={(e) => {handleSelectChange(e)}}
+                          input={<TransparentInput className='!outline-none'/>}
+                          inputProps={{
+                              classes: {
+                                  icon: "!text-black dark:!text-white"
+                              }
+                          }}
+                        >
+                          {modalities.map((item, i) => (
+                            <MenuItem
+                              key={i}
+                              value={item}
+                            >
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      
+
+                  </div>
+                  <div className='text-center'>
+                      <button className='button bg-primary text-white'>Filtrar experiencias</button>
+                  </div>
+                </div>
+                </Collapse>
+                
+
+                {/* project list */}
+                <div>
+                    {projectsList.length !== 0 && projectsList.map((item:ProjectInt, i:number) => (
+                      <Project key={i} project={item}/>
+                    ))}
+                </div>
+              </div>
             </div>
         </main>
       </>

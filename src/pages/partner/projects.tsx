@@ -82,13 +82,13 @@ export default function Projects() {
     const { user } = useAuth()
     const { projects, addProject, getProjectsByOrg } = useProjects()
 
-    //Material
+    //Material UI
     const theme = useTheme();
 
     //router
     const router = useRouter()
 
-    //useSTate
+    //useState
     const [projectsList, setProjectsList] = useState([])
 
     //useState - formData
@@ -126,12 +126,12 @@ export default function Projects() {
 
     const fecthProjects = async () => {
       const res = await getProjectsByOrg(user.company)
-        console.log(res)
-        if(res !== false) {
-          setProjectsList(res)
-        } else {
-          //do somehting
-        }
+      console.log(res)
+      if(res !== false) {
+        setProjectsList(res)
+      } else {
+        //do somehting
+      }
     }
 
 
@@ -194,6 +194,7 @@ export default function Projects() {
             hours: formData.hours,
             inscripcion: formData.inscription,
             availability: formData.availability,
+            duration: formData.duration,
             carrerasList: carrerasList,
             modality: formData.modality,
             location: formData.location,
@@ -364,7 +365,6 @@ export default function Projects() {
                                     value={formData.duration}
                                     name="duration"
                                     onChange={(e) => {handleSelectChange(e)}}
-                                    label="Carreras"
                                     input={<TransparentInput className='!outline-none'/>}
                                     inputProps={{
                                         classes: {
@@ -513,7 +513,7 @@ export default function Projects() {
                 {/* table with projects */}
                 <div className='max-w-5xl m-auto mt-8'>
                   <table className="table-auto w-full text-left">
-                    <thead>
+                    <thead className=''>
                       <tr>
                         <th>Experiencia</th>
                         <th>Grupo</th>
