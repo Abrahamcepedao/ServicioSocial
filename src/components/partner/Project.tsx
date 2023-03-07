@@ -21,7 +21,6 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import { CreateRounded, DeleteRounded } from '@mui/icons-material';
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
-
 import ComputerRoundedIcon from '@mui/icons-material/ComputerRounded';
 import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import InterpreterModeRoundedIcon from '@mui/icons-material/InterpreterModeRounded';
@@ -147,7 +146,7 @@ const Project = ({key, project, deleteProject}:AppProps) => {
                         <InterpreterModeRoundedIcon/>
                         <p>Hasta {project.hours}</p>
                     </div>
-                    <button onClick={() => {handleViewStudents()}} className='button__sm bg-primary'>Ver alumnos</button>
+                    <button onClick={() => {handleViewStudents()}} className='button__sm bg-primary text-white'>Ver alumnos</button>
                 </div>
 
                 {/* collapse */}
