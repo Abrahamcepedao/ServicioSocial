@@ -21,7 +21,6 @@ import FormControl from '@mui/material/FormControl';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import DashboardCustomizeRoundedIcon from '@mui/icons-material/DashboardCustomizeRounded';
-import { CreateRounded, DeleteRounded } from '@mui/icons-material';
 
 //CSS
 import styles from '@/styles/Home.module.css'
@@ -29,6 +28,7 @@ import styles from '@/styles/Home.module.css'
 //Components
 import SideBar from '@/components/global/Sidebar';
 import { TransparentInput } from '@/components/global/Select';
+import Project from '@/components/partner/Project';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
@@ -43,7 +43,7 @@ import modalities from '@/utils/constants/modalities';
 import inscripcion from '@/utils/constants/inscripcion';
 
 //interfaces
-import Project from '@/utils/interfaces/Project.interface';
+import ProjectInt from '@/utils/interfaces/ProjectAdmin.interface';
 
 
 //Alert
@@ -80,7 +80,7 @@ const MenuProps = {
 export default function Projects() {
     //context
     const { user } = useAuth()
-    const { projects, addProject, getProjectsByOrg } = useProjects()
+    const { projects, setProject, addProject, getProjectsByOrg } = useProjects()
 
     //Material UI
     const theme = useTheme();
@@ -89,7 +89,8 @@ export default function Projects() {
     const router = useRouter()
 
     //useState
-    const [projectsList, setProjectsList] = useState([])
+    const [allProjects, setAllProjects] = useState<Array<ProjectInt>>([])
+    const [projectsList, setProjectsList] = useState<Array<ProjectInt>>([])
 
     //useState - formData
     const [formData, setFormData] = useState({
@@ -102,7 +103,7 @@ export default function Projects() {
       inscription: "",
       availability: "",
       modality: "",
-      location: ""
+      location: "",
     })
     const [carrerasList, setCarrerasList] = useState<string[]>([]);
 
@@ -111,7 +112,8 @@ export default function Projects() {
       open: false,
       message: "",
       severity: "error",
-      collapse: false
+      collapse: false,
+      filter: ""
     })
 
 
@@ -119,21 +121,35 @@ export default function Projects() {
     useEffect(() => {
       //console.log(user)
       if(user) {
-        fecthProjects()
+        if(projects.length !== 0) {
+          setProjectsList(projects)
+          setAllProjects(projects)
+        } else {
+          fecthProjects()
+        }
       }
     },[])
 
 
+    /* fecth project */
     const fecthProjects = async () => {
       const res = await getProjectsByOrg(user.company)
       console.log(res)
       if(res !== false) {
         setProjectsList(res)
+        setAllProjects(res)
       } else {
         //do somehting
       }
     }
 
+    /* handle filter change */
+    const handleFilterChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+      let temp:ProjectInt[] = [...allProjects]
+      temp = temp.filter((el:ProjectInt) => el.name.toLocaleLowerCase().includes(e.target.value.toLocaleLowerCase()))
+      setProjectsList(temp)
+      setUtils({...utils, filter: e.target.value})
+    }
 
     /* handle alert close */
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -174,9 +190,10 @@ export default function Projects() {
     };
 
 
+    /* verify form */
     const verifyForm = () => {
       //check fields are not empty
-
+      
       return true
     }
 
@@ -193,17 +210,17 @@ export default function Projects() {
             crn: formData.crn,
             hours: formData.hours,
             inscripcion: formData.inscription,
-            availability: formData.availability,
+            availability: Number(formData.availability),
             duration: formData.duration,
             carrerasList: carrerasList,
             modality: formData.modality,
             location: formData.location,
-            compay: user.company,
+            company: user.company,
             logoUrl: user.fileUrl,
             uid: user.uid + "-" + Date.now()
           }
           
-          const res = await addProject(temp)
+          const res:ProjectInt = await addProject(temp)
           if(res) {
             //resete form
             setFormData({
@@ -226,6 +243,10 @@ export default function Projects() {
                 message: "Projecto agregado exitosamente.",
                 collapse: false
               })
+
+            let temp:ProjectInt[] = [...projectsList]
+            temp.push(res)
+            setProjectsList(temp)
           } else {
             setUtils({
                 ...utils,
@@ -255,7 +276,7 @@ export default function Projects() {
                     <div className='flex justify-end items-center'>
                     <div className='filter__container'>
                         <SearchRoundedIcon/>
-                        <input placeholder='Busca un usuario' className='filter__input'/>
+                        <input placeholder='Busca una experiencia' value={utils.filter} onChange={(e) => {handleFilterChange(e)}} className='filter__input'/>
                     </div>
 
                     {utils.collapse ? (
@@ -265,7 +286,7 @@ export default function Projects() {
                         </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title="Agregar usuario" placement='top'>
+                        <Tooltip title="Agregar" placement='top'>
                         <IconButton onClick={() => {setUtils({...utils, collapse: true})}}>
                             <DashboardCustomizeRoundedIcon className='text-black dark:text-white'/>
                         </IconButton>
@@ -512,39 +533,10 @@ export default function Projects() {
 
                 {/* table with projects */}
                 <div className='max-w-5xl m-auto mt-8'>
-                  <table className="table-auto w-full text-left">
-                    <thead className=''>
-                      <tr>
-                        <th>Experiencia</th>
-                        <th>Grupo</th>
-                        <th>CRN</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {projectsList.length !== 0 && projectsList.map((project: Project, i) => (
-                        <tr key={i} className="bg-light-gray pl-4">
-                          <td>{project.name}</td>
-                          <td>{project.group}</td>
-                          <td>{project.crn}</td>
-                          <td>
-                            <Tooltip title="Editar">
-                              <IconButton>
-                                <CreateRounded className='text-black dark:text-white hover:scale-110'/>
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Eliminar">
-                              <IconButton>
-                                <DeleteRounded className='text-black dark:text-white hover:scale-110'/>
-                              </IconButton>
-                            </Tooltip>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                    {projectsList.length !== 0 && projectsList.map((project: ProjectInt, i:number) => (
+                      <Project project={project} key={i}/>
+                    ))}
                 </div>
-
             </div>
 
             {/* alert */}

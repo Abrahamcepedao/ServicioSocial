@@ -5,20 +5,35 @@ import React, { useState } from 'react'
 import { 
     addProjectFirebase,
     getProjectsOrg,
-    getAllProjects
+    getAllProjects,
+    updateProjectFirebase
 } from '../database/funtions/projects'
+
+//Interfaces
+import Project from '@/utils/interfaces/Project.interface'
+import ProjectAdmin from '@/utils/interfaces/ProjectAdmin.interface'
 
 const ProjectsContext = createContext<any>({})
 
 export const useProjects = () => useContext(ProjectsContext)
 
 export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) => {
-    const [projects, setProjects] = useState<any>([])
+    const [projects, setProjects] = useState<Array<Project>>([])
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+    /* set project */
+    const setProject = (project:Project) => {
+        setSelectedProject(project)
+    }
 
     /* add project */
-    const addProject = async (project:any) => {
-        console.log(project)
+    const addProject = async (project:Project) => {
         return await addProjectFirebase(project)
+    }
+
+    /* update project info */
+    const updateProject = async (project:Project) => {
+        return await updateProjectFirebase(project)
     }
 
     /* get project by organization */
@@ -50,8 +65,11 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
     return <ProjectsContext.Provider value={{
         projects, 
         addProject, 
+        updateProject,
         getProjectsByOrg,
-        getProjects
+        getProjects,
+        setProject,
+        selectedProject,
     }}>
         {children}
     </ProjectsContext.Provider>

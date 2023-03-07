@@ -68,16 +68,6 @@ export default function Favorites() {
         }
     },[])
 
-    const fecthProjects = async () => {
-      const res = await getProjectsByOrg(user.company)
-        console.log(res)
-        if(res !== false) {
-          setProjectsList(res)
-        } else {
-          //do somehting
-        }
-    }
-
 
     return (
       <>

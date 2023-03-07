@@ -38,7 +38,8 @@ const Project = ({key, project}:AppProps) => {
     //useState - open
     const [state, setState] = useState({
         open: false,
-        collapse: false
+        collapse: false,
+        isFav: false
     })
 
 
@@ -54,15 +55,15 @@ const Project = ({key, project}:AppProps) => {
 
 
     return (
-        <div>
+        <div key={key}>
             <div className="bg-light dark:bg-dark flex justify-between items-center overflow-scroll text-sm pt-4 pb-4 text-left">
                 <div className='w-24 min-w-sm flex justify-start items-center'>
-                    {!project.isFav ? (
-                        <IconButton>
+                    {state.isFav ? (
+                        <IconButton onClick={() => {setState({...state, isFav: false})}}>
                             <FavoriteRoundedIcon className='!text-secondary'/>
                         </IconButton>
                     ) : (
-                        <IconButton>
+                        <IconButton onClick={() => {setState({...state, isFav: true})}}>
                             <FavoriteBorderRoundedIcon className='text-black dark:text-white'/>
                         </IconButton>
                     )}

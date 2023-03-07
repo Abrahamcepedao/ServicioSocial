@@ -1,4 +1,4 @@
-interface Project {
+interface ProjectAdmin {
     name: string,
     key: string,
     group: string,
@@ -14,7 +14,7 @@ interface Project {
     company: string,
     logoUrl: string,
     uid: string,
-    isFav: boolean
+    students: string[]
 }
 
-export default Project
+export default ProjectAdmin

@@ -112,7 +112,7 @@ const SideBar = () => {
 
 
                 {/*  */}
-                <div>
+                <div className='pb-5'>
                     <Link href={"/settings"}>
                         <Tooltip title="Ajustes" placement='top'>
                             <IconButton>
