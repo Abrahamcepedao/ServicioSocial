@@ -1,5 +1,5 @@
 //React
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 //Next.js
 import { useTheme } from 'next-themes';
@@ -13,6 +13,8 @@ import { useProjects } from '@/context/ProjectsContext';
 //Material UI
 import { IconButton, Tooltip } from '@mui/material'
 import {Collapse} from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
@@ -27,12 +29,21 @@ import InterpreterModeRoundedIcon from '@mui/icons-material/InterpreterModeRound
 //interfaces
 import ProjectInt from '@/utils/interfaces/ProjectAdmin.interface';
 
-interface AppProps {
-    key: number,
-    project: ProjectInt
-}
+//Material UI - Alert
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-const Project = ({key, project}:AppProps) => {
+type AppProps = {
+    key: number,
+    project: ProjectInt,
+    deleteProject: (uid:string) => void
+};
+
+const Project = ({key, project, deleteProject}:AppProps) => {
     //context
     const { setProject } = useProjects()
 
@@ -42,14 +53,29 @@ const Project = ({key, project}:AppProps) => {
     //useState - open
     const [state, setState] = useState({
         open: false,
-        collapse: false
+        collapse: false,
     })
 
+    //useState - alert open
+    const [utils, setUtils] = useState({
+      open: false,
+      message: "",
+      severity: "error"
+    })
 
     //useEffect
     useEffect(() => {
         console.log(project)
     },[])
+
+    /* handle alert close */
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setUtils({...utils, open: false});
+    };
 
     /* handle view students click */
     const handleEditClick = () => {
@@ -64,7 +90,6 @@ const Project = ({key, project}:AppProps) => {
       setProject(project)
       router.push("/partner/project/students")
     }
-
 
     return (
         <div key={key}>
@@ -84,7 +109,7 @@ const Project = ({key, project}:AppProps) => {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Editar" placement='top'>
-                            <IconButton>
+                            <IconButton onClick={() => {deleteProject(project.uid)}}>
                                 <DeleteRounded className='text-black dark:text-white'/>
                             </IconButton>
                         </Tooltip>
@@ -144,6 +169,14 @@ const Project = ({key, project}:AppProps) => {
                 </Collapse>
             </div>
 
+
+            {/* alert */}
+            <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
+              {/* @ts-ignore */}
+              <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
+                {utils.message}
+              </Alert>
+            </Snackbar>
             
         </div>
     )

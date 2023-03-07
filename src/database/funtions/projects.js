@@ -38,6 +38,19 @@ const updateProjectFirebase = async (project) => {
     }
 }
 
+/* delete project */
+const deleteProjectFirebase = async (uid) => {
+    try {
+        const docRef = doc(db, 'projects', uid)
+        await deleteDoc(docRef)
+        return true
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
+
+
 /* get proyect by org name */
 const getProjectsOrg = async (org) => {
     try {
@@ -83,7 +96,8 @@ const getAllProjects = async () => {
 
 export { 
     addProjectFirebase, 
+    updateProjectFirebase,
+    deleteProjectFirebase,
     getProjectsOrg, 
     getAllProjects,
-    updateProjectFirebase 
 }
