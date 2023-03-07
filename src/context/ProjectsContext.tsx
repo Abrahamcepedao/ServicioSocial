@@ -6,7 +6,8 @@ import {
     addProjectFirebase,
     getProjectsOrg,
     getAllProjects,
-    updateProjectFirebase
+    updateProjectFirebase,
+    deleteProjectFirebase
 } from '../database/funtions/projects'
 
 //Interfaces
@@ -34,6 +35,11 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
     /* update project info */
     const updateProject = async (project:Project) => {
         return await updateProjectFirebase(project)
+    }
+
+    /* delete project */
+    const deleteProject = async (uid:string) => {
+        return await deleteProjectFirebase(uid)
     }
 
     /* get project by organization */
@@ -66,6 +72,7 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         projects, 
         addProject, 
         updateProject,
+        deleteProject,
         getProjectsByOrg,
         getProjects,
         setProject,

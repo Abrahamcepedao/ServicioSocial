@@ -47,7 +47,7 @@ import inscripcion from '@/utils/constants/inscripcion';
 import ProjectInt from '@/utils/interfaces/ProjectAdmin.interface';
 
 
-//Alert
+//Material UI - Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
   ref,
@@ -487,7 +487,6 @@ export default function Edit() {
 
             </div>
 
-            {/* alert */}
             {/* alert */}
             <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
               {/* @ts-ignore */}

@@ -80,7 +80,7 @@ const MenuProps = {
 export default function Projects() {
     //context
     const { user } = useAuth()
-    const { projects, setProject, addProject, getProjectsByOrg } = useProjects()
+    const { projects, deleteProject, addProject, getProjectsByOrg } = useProjects()
 
     //Material UI
     const theme = useTheme();
@@ -257,6 +257,34 @@ export default function Projects() {
               })
           }
         }
+    }
+
+    /* handle delete project */
+    const handleDeleteProject = async(uid:string) => {
+      console.log(uid)
+      const res = await deleteProject(uid)
+      if(res) {
+          let temp:ProjectInt[] = [...allProjects]
+          temp = temp.filter((el:ProjectInt) => el.uid !== uid)
+          setProjectsList(temp)
+          setAllProjects(temp)
+          //setUtils
+          setUtils({
+            ...utils,
+            open: true,
+            severity: 'success',
+            message: "Projecto eliminado exitosamente.",
+            collapse: false
+          })
+      } else {
+          setUtils({
+            ...utils,
+            open: true,
+            severity: 'error',
+            message: "Error al eliminar proyecto. Inténtelo de nuevo.",
+            collapse: false
+          })
+      }
     }
 
     return (
@@ -534,7 +562,7 @@ export default function Projects() {
                 {/* table with projects */}
                 <div className='max-w-5xl m-auto mt-8'>
                     {projectsList.length !== 0 && projectsList.map((project: ProjectInt, i:number) => (
-                      <Project project={project} key={i}/>
+                      <Project project={project} key={i} deleteProject={handleDeleteProject}/>
                     ))}
                 </div>
             </div>
