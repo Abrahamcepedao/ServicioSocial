@@ -10,6 +10,9 @@ const TransparentInput = styled(InputBase)(({ theme }) => ({
     fontSize: 16,
     padding: '6px 10px',
   },
+  '&:focus': {
+    borderRadius: 10,
+  },
 }));
 
 export { TransparentInput }

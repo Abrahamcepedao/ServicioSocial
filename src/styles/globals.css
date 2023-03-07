@@ -32,6 +32,11 @@ body {
   font-size: 35px;
 }
 
+.subtitle {
+  font-weight: bold;
+  font-size: 20px;
+}
+
 /* inputs */
 .input {
   background: none;
@@ -62,6 +67,7 @@ body {
   background: none;
   outline: none !important;
   flex: 1;
+  margin-left: 8px;
 }
 
 /* file input */
@@ -101,10 +107,17 @@ body {
   transition: transform 450ms;
   padding: 8px 20px;
 }
-.button:hover {
-  transform: scale(1.06);
+.button:hover, .button__sm:hover {
+  transform: scale(1.04);
 }
 
+.button__sm {
+  width: 100%;
+  max-width: 140px;
+  border-radius: 10px;
+  transition: transform 450ms;
+  padding: 4px 4px;
+}
 
 /* icons */
 .sidebar__icon {
