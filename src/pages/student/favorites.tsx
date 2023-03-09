@@ -62,7 +62,14 @@ export default function Favorites() {
             setProjectsList(favs)
           }
         }
-    },[])
+    },[favs])
+
+    const handleDeleteFromFav = (uid:string) => {
+      console.log(uid)
+      let data = [...projectsList]
+      data = data.filter((el:ProjectInt) => el.uid !== uid)
+      setProjectsList(data)
+    }
 
     return (
       <>
@@ -87,7 +94,7 @@ export default function Favorites() {
                 {/* project list */}
                 <div>
                     {projectsList.length !== 0 && projectsList.map((item:ProjectInt, i:number) => (
-                      <Project key={i} project={item}/>
+                      <Project key={i} project={item} deleteFromFav={handleDeleteFromFav}/>
                     ))}
                 </div>
               </div>

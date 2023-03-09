@@ -18,17 +18,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 
 //Material UI - icons
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded';
-
-//CSS
-import styles from '@/styles/Home.module.css'
-
-//Assets
-import Logo from '../../public/logo.png'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 //Components
 import SideBar from '@/components/global/Sidebar';
@@ -49,7 +40,6 @@ import inscripcion from '@/utils/constants/inscripcion';
 
 //interfaces
 import ProjectInt from '@/utils/interfaces/Project.interface';
-
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -195,7 +185,12 @@ export default function Oferta() {
                   <h1 className='title'>Oferta</h1>
                   <div>
                     <IconButton onClick={() => {setUtils({...utils, collapse: !utils.collapse})}}>
-                      <FilterListRoundedIcon className='text-black dark:text-white'/>
+                      {utils.collapse ? (
+                        <CloseRoundedIcon className='text-black dark:text-white'/>
+                      ) : (
+                        <FilterListRoundedIcon className='text-black dark:text-white'/>
+                      )}
+                      
                     </IconButton>
                   </div>
                 </div>
@@ -436,7 +431,9 @@ export default function Oferta() {
                 {/* project list */}
                 <div>
                     {projectsList.length !== 0 && projectsList.map((item:ProjectInt, i:number) => (
-                      <Project key={i} project={item}/>
+                      <div key={i}>
+                        <Project project={item}/>
+                      </div>
                     ))}
                 </div>
               </div>

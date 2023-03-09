@@ -26,7 +26,7 @@ import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import InterpreterModeRoundedIcon from '@mui/icons-material/InterpreterModeRounded';
 
 //interfaces
-import ProjectInt from '@/utils/interfaces/ProjectAdmin.interface';
+import ProjectInt from '@/utils/interfaces/Project.interface';
 
 //Material UI - Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -37,12 +37,11 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 type AppProps = {
-    key: number,
     project: ProjectInt,
     deleteProject: (uid:string) => void
 };
 
-const Project = ({key, project, deleteProject}:AppProps) => {
+const Project = ({project, deleteProject}:AppProps) => {
     //context
     const { setProject } = useProjects()
 
@@ -91,7 +90,7 @@ const Project = ({key, project, deleteProject}:AppProps) => {
     }
 
     return (
-        <div key={key}>
+        <div>
             <div className="bg-light-gray  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">    
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>

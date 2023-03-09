@@ -1,7 +1,5 @@
 import { db, storage } from '../firebase'
 import { setDoc, doc, updateDoc, getDoc, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-
 
 /* add project */
 const addProjectFirebase = async (project) => {
@@ -94,10 +92,103 @@ const getAllProjects = async () => {
     }
 }
 
+/* register student */
+const registerStudentFirebase = async (project, student) => {
+    try {
+        const docRef = doc(db, 'projects', project.uid)
+        const userRef = doc(db, 'users', student.uid)
+
+        let students = project.students
+        let studentTemp = {
+            carrera: student.carrera,
+            horas: student.horas,
+            mail: student.mail,
+            name: student.name,
+            phone: student.phone,
+            semestre: student.semestre,
+            promedio: student.promedio,
+            signeUp: student.signeUp,
+            type: student.type,
+            uid: student.uid
+        }
+        students.push(studentTemp)
+
+        let payload = {
+            ...project,
+            students
+        }
+        console.log(payload)
+
+        let currentProject = {
+            name: project.name,
+            key: project.key,
+            group: project.group,
+            crn: project.crn,
+            hours: project.hours,
+            inscripcion: project.inscripcion,
+            availability: project.availability,
+            occupied: project.occupied,
+            duration: project.duration,
+            carrerasList: project.carrerasList,
+            modality: project.modality,
+            location: project.location,
+            company: project.company,
+            logoUrl: project.logoUrl,
+            uid: project.uid
+        }
+
+        let userPayload = {
+            ...student,
+            currentProject
+        }
+        console.log(userPayload)
+
+        await updateDoc(docRef, payload)
+        await updateDoc(userRef, userPayload)
+        return true
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
+
+/* unregister student */
+const unregisterStudentFirebase = async (project, student) => {
+    try {
+        const docRef = doc(db, 'projects', project.uid)
+        const userRef = doc(db, 'users', student.uid)
+
+        let students = project.students
+        students = students.filter((el) => el.uid !== student.uid)
+
+
+        let payload = {
+            ...project,
+            students
+        }
+        console.log(payload)
+
+        let userPayload = {
+            ...student,
+            currentProject: null
+        }
+        console.log(userPayload)
+
+        await updateDoc(docRef, payload)
+        await updateDoc(userRef, userPayload)
+        return true
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
+
 export { 
     addProjectFirebase, 
     updateProjectFirebase,
     deleteProjectFirebase,
     getProjectsOrg, 
     getAllProjects,
+    registerStudentFirebase,
+    unregisterStudentFirebase
 }

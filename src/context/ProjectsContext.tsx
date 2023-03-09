@@ -7,12 +7,14 @@ import {
     getProjectsOrg,
     getAllProjects,
     updateProjectFirebase,
-    deleteProjectFirebase
+    deleteProjectFirebase,
+    registerStudentFirebase,
+    unregisterStudentFirebase
 } from '../database/funtions/projects'
 
 //Interfaces
 import Project from '@/utils/interfaces/Project.interface'
-import ProjectAdmin from '@/utils/interfaces/ProjectAdmin.interface'
+import Student from '@/utils/interfaces/Student.interface'
 
 const ProjectsContext = createContext<any>({})
 
@@ -97,6 +99,16 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         }
     }
 
+    /* register student */
+    const registerStudent = async (project: Project, student:Student) => {
+        return await registerStudentFirebase(project, student)
+    }
+
+    /* unregister student */
+    const unregisterStudent = async(project: Project, student: Student) => {
+        return await unregisterStudentFirebase(project, student)
+    }
+
 
     return <ProjectsContext.Provider value={{
         projects, 
@@ -109,7 +121,9 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         selectedProject,
         favs,
         addFav,
-        deleteFav
+        deleteFav,
+        registerStudent,
+        unregisterStudent
     }}>
         {children}
     </ProjectsContext.Provider>

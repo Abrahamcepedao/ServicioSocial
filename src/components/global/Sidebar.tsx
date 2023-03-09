@@ -34,7 +34,6 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MenuMobile from './MenuMobile'
 import MobileHeader from './MobileHeader';
 import ThemeToggler from './ThemeToggler'
-import { FavoriteBorderOutlined } from '@mui/icons-material';
 
 const SideBar = () => {
     //router
@@ -77,14 +76,16 @@ const SideBar = () => {
                         </Link>
                     )}
 
-                    <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/student/oferta" style={{background: router.pathname.includes('/oferta') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/oferta') ? 1 : 0.5}}>
-                        {router.pathname.includes('/oferta') ? (
-                            <AccountTreeRoundedIcon className="sidebar__icon"/>
-                        ) : (
-                            <AccountTreeOutlinedIcon className="sidebar__icon"/>
-                        )}
-                        <p className="">Oferta</p>
-                    </Link>
+                    {user.type !== "partner" && (
+                        <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/student/oferta" style={{background: router.pathname.includes('/oferta') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/oferta') ? 1 : 0.5}}>
+                            {router.pathname.includes('/oferta') ? (
+                                <AccountTreeRoundedIcon className="sidebar__icon"/>
+                            ) : (
+                                <AccountTreeOutlinedIcon className="sidebar__icon"/>
+                            )}
+                            <p className="">Oferta</p>
+                        </Link>
+                    )}
 
                     {user.type === "student" && (
                         <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/student/favorites" style={{background: router.pathname.includes('/favorites') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/favorites') ? 1 : 0.5}}>

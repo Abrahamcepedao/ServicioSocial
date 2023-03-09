@@ -1,9 +1,5 @@
 //React
-import { useEffect, useState } from 'react';
-
-//Next.js
-import { useTheme } from 'next-themes';
-import Image from 'next/image'
+import React, { useEffect, useState } from 'react';
 
 //Context
 import { useAuth } from '../../context/AuthContext'
@@ -12,6 +8,8 @@ import { useProjects } from '@/context/ProjectsContext';
 //Material UI
 import { IconButton } from '@mui/material'
 import {Collapse} from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
@@ -26,51 +24,143 @@ import InterpreterModeRoundedIcon from '@mui/icons-material/InterpreterModeRound
 
 //interfaces
 import ProjectInt from '@/utils/interfaces/Project.interface';
+import Student from '@/utils/interfaces/Student.interface';
 
 interface AppProps {
-    key: number,
-    project: ProjectInt
+    project: ProjectInt,
+    deleteFromFav?: (uid:string) => void
 }
 
-const Project = ({key, project}:AppProps) => {
-    //Theme
-    const { theme } = useTheme()
+//Material UI - Alert
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
+const Project = ({project, deleteFromFav}:AppProps) => {
     //context
     const { user } = useAuth()
-    const { addFav, deleteFav } = useProjects()
+    const { favs, addFav, deleteFav, registerStudent, unregisterStudent } = useProjects()
 
     //useState - open
     const [state, setState] = useState({
         open: false,
         collapse: false,
-        isFav: false
+        isFav: false,
+        isRegistered: false
+    })
+
+    //useState - alert open
+    const [utils, setUtils] = useState({
+      open: false,
+      message: "",
+      severity: "error",
     })
 
 
     //useEffect
     useEffect(() => {
-        console.log(project)
-    },[])
+        setup()
+    },[project])
 
+
+    /* handle alert close */
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setUtils({...utils, open: false});
+    };
+
+    /*  set project fav state */
+    const setup = () => {
+        //check is fav
+        let isFav = false
+        if(favs.length !== 0){
+            favs.forEach((item:ProjectInt) => {
+                if(item.uid === project.uid) {
+                    isFav = true
+                }
+            })
+        }
+
+        //check is registered
+        let isRegistered = false
+        if(project.students.length !== 0){
+            if(project.students.findIndex((el:Student) => el.uid === user.uid) !== -1) {
+                isRegistered = true
+            }
+        }
+
+        //set State
+        setState({...state, isRegistered, isFav})
+    }
+
+    /* handle favorite project click */
     const handleFavoriteClick = () => {
         if(state.isFav) {
             //delete from favs
             deleteFav(project.uid)
+            if(deleteFromFav !== undefined) {
+                deleteFromFav(project.uid)
+            }
         } else {
             //add to favs
-            addFav(project)
+            addFav({...project, isFav: true})
         }
         setState({...state, isFav: !state.isFav})
     }
 
 
-    const handleRegisterClick = () => {
+    /* handle register click */
+    const handleRegisterClick = async() => {
+        const res = await registerStudent(project, user)
+        if(res) {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: 'success',
+                message: "¡Te registraste exitosamente!"
+            })
+            setState({...state, isRegistered: true})
+        } else {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: 'error',
+                message: "Ocurrió un error al registrar la experiencia"
+            })
+            setState({...state, isRegistered: false})
+        }
+    }
 
+    /* handle unregister click */
+    const handleUnregisterClick = async() => {
+        const res = await unregisterStudent(project, user)
+        if(res) {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: 'success',
+                message: "¡Se elimino el registro exitosamente!"
+            })
+            setState({...state, isRegistered: false})
+        } else {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: 'error',
+                message: "Ocurrió un error al eliminar la experiencia"
+            })
+            setState({...state, isRegistered: true})
+        }
     }
 
     return (
-        <div key={key}>
+        <div>
             <div className="bg-light-gray  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>
@@ -104,6 +194,10 @@ const Project = ({key, project}:AppProps) => {
 
                 {/* lower */}         
                 <div className='grid grid-cols-6 mb-4'>
+                    <div className=''>
+                        <img className='rounded-lg w-20 h-auto mb-2' src={`${project.logoUrl}`}/>
+                        <p className='opacity-50'>{project.company}</p>
+                    </div>
                     <div className='opacity-50'>
                         <Groups2RoundedIcon/>
                         <p>{"0/" + project.availability}</p>
@@ -120,11 +214,12 @@ const Project = ({key, project}:AppProps) => {
                         <InterpreterModeRoundedIcon/>
                         <p>{project.inscripcion === "Inscripción por entrevista" ? "Entrevista" : "IRIS"}</p>
                     </div>
-                    <div className='opacity-50'>
-                        <InterpreterModeRoundedIcon/>
-                        <p>Hasta {project.hours}</p>
-                    </div>
-                    <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white'>Registrar experiencia</button>
+                    {state.isRegistered ? (
+                        <button onClick={() => {handleUnregisterClick()}} className='button__sm bg-secondary text-white'>Eliminar registro</button>
+                    ) : (
+                        <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white'>Registrar experiencia</button>
+                    )}
+                    
                 </div>
 
                 {/* collapse */}
@@ -145,6 +240,14 @@ const Project = ({key, project}:AppProps) => {
                     </div>
                 </Collapse>
             </div>
+
+            {/* alert */}
+            <Snackbar open={utils.open} autoHideDuration={4000} onClose={handleClose}>
+              {/* @ts-ignore */}
+              <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
+                {utils.message}
+              </Alert>
+            </Snackbar>
         </div>
     )
 }
