@@ -2,6 +2,7 @@
 import Head from 'next/head'
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
 
 //React
 import React, { useState, useEffect } from 'react'
@@ -21,6 +22,7 @@ import styles from '@/styles/Home.module.css'
 
 //Assets
 import Logo from '../../public/logo.png'
+import LogoW from '../../public/logo_w.png'
 
 //Components
 import ThemeToggler from '@/components/global/ThemeToggler';
@@ -42,6 +44,9 @@ export default function Login() {
 
     //router
     const router = useRouter()
+
+    //Theme
+    const { theme } = useTheme()
 
     //useState - formData
     const [formData, setFormData] = useState({
@@ -114,41 +119,43 @@ export default function Login() {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className='p-5'>
-          <div className='flex flex-col items-center justify-between'>
+        <main className='min-h-screen'>
+          <div className='flex flex-col items-center justify-between min-h-screen p-20'>
               <div className='mb-20'>
-                <Image src={Logo} width={200} height={140} alt="Servicio Social"/>
-                <ThemeToggler />
+                <Image src={theme === "light" ? Logo : LogoW} width={200} height={140} alt="Servicio Social"/>
+                {/* <ThemeToggler /> */}
               </div>
-              <form onSubmit={(e) => {handleLogin(e)}} className="flex-1" autoComplete='off'>
-                  <div className='grid grid-cols-2 gap-4 mb-8'>
-                      <div className='input__container '>
-                        <EmailRoundedIcon/>
-                        <input 
-                          name='maiil' placeholder='Ingrese su mail'
-                          autoComplete='off'
-                          value={formData.maiil} onChange={(e) => {handleInputChange(e)}}
-                          className="input"
-                        />
-                      </div>
-                      
-                      <div className='input__container '>
-                        <LockRoundedIcon/>
-                        <input 
-                          name='passsword' placeholder='Ingrese su contraseña'
-                          type="password" autoComplete='new-password'
-                          value={formData.passsword} onChange={(e) => {handleInputChange(e)}}
-                          className="input"
-                        />
-                      </div>
-                  </div>
-                  
-                  <div className='text-center'>
-                    <button className='button bg-primary text-white' type='submit'>Iniciar sesión</button>
-                    <p className='mt-10'>¿No tienes cuenta?<a href='/signup' className='text-primary underline'> Regístrate</a></p>
-                  </div>
-                  
-              </form>
+              <div className='flex flex-col items-center justify-center flex-1'>
+                <form onSubmit={(e) => {handleLogin(e)}} className="flex-1" autoComplete='off'>
+                    <div className='grid grid-cols-2 gap-4 mb-8'>
+                        <div className='input__container '>
+                          <EmailRoundedIcon/>
+                          <input 
+                            name='maiil' placeholder='Ingrese su mail'
+                            autoComplete='off'
+                            value={formData.maiil} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
+                        
+                        <div className='input__container '>
+                          <LockRoundedIcon/>
+                          <input 
+                            name='passsword' placeholder='Ingrese su contraseña'
+                            type="password" autoComplete='new-password'
+                            value={formData.passsword} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
+                    </div>
+                    
+                    <div className='text-center'>
+                      <button className='button bg-primary text-white' type='submit'>Iniciar sesión</button>
+                      <p className='mt-10'>¿No tienes cuenta?<a href='/signup' className='text-primary underline'> Regístrate</a></p>
+                    </div>
+                    
+                </form>
+              </div>
           </div>
 
           <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>

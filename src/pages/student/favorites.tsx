@@ -11,23 +11,17 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
-
-//CSS
-import styles from '@/styles/Home.module.css'
-
-//Assets
-import Logo from '../../public/logo.png'
 
 //Components
 import SideBar from '@/components/global/Sidebar';
+import Project from '@/components/student/Project';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
 import { useProjects } from '@/context/ProjectsContext';
+
+//interfaces
+import ProjectInt from '@/utils/interfaces/Project.interface';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -40,7 +34,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 export default function Favorites() {
     //context
     const { user, login } = useAuth()
-    const { projects } = useProjects()
+    const { favs, deleteFav } = useProjects()
 
     //router
     const router = useRouter()
@@ -63,11 +57,19 @@ export default function Favorites() {
 
     //useEffect
     useEffect(() => {
-        if(user) {
-
+        if(user && favs) {
+          if(favs.length !== 0){
+            setProjectsList(favs)
+          }
         }
-    },[])
+    },[favs])
 
+    const handleDeleteFromFav = (uid:string) => {
+      console.log(uid)
+      let data = [...projectsList]
+      data = data.filter((el:ProjectInt) => el.uid !== uid)
+      setProjectsList(data)
+    }
 
     return (
       <>
@@ -80,9 +82,22 @@ export default function Favorites() {
         <main className=''>
             <SideBar/>
             <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-10'>
-                <div className=''>
-                    <h1>Oferta de proyectas</h1>
+                <div className='max-w-4xl m-auto'>
+
+                {/* title */}
+                <div className='flex justify-between items-center mb-10'>
+                  <h1 className='title'>Tus Favoritos</h1>
+                  
                 </div>
+                
+
+                {/* project list */}
+                <div>
+                    {projectsList.length !== 0 && projectsList.map((item:ProjectInt, i:number) => (
+                      <Project key={i} project={item} deleteFromFav={handleDeleteFromFav}/>
+                    ))}
+                </div>
+              </div>
             </div>
         </main>
       </>

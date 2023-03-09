@@ -30,6 +30,7 @@ import styles from '@/styles/Home.module.css'
 //Components
 import SideBar from '@/components/global/Sidebar';
 import { TransparentInput } from '@/components/global/Select';
+import Student from '@/components/partner/Student';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
@@ -45,7 +46,7 @@ import inscripcion from '@/utils/constants/inscripcion';
 
 //interfaces
 import Project from '@/utils/interfaces/Project.interface';
-
+import StudentInt from '@/utils/interfaces/Student.interface';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -90,29 +91,17 @@ export default function Students() {
     const router = useRouter()
 
     //useState
-    const [projectsList, setProjectsList] = useState<Array<Project>>([])
+    const [allStudents, setAllStudents] = useState<Array<StudentInt>>([])
+    const [studentList, setStudentList] = useState<Array<StudentInt>>([])
 
-    //useState - formData
-    const [formData, setFormData] = useState({
-      name: "",
-      key: "",
-      group: "",
-      crn: "",
-      duration: "",
-      hours: "",
-      inscription: "",
-      availability: "",
-      modality: "",
-      location: "",
-    })
-    const [carrerasList, setCarrerasList] = useState<string[]>([]);
 
     //useState - alert open
     const [utils, setUtils] = useState({
       open: false,
       message: "",
       severity: "error",
-      collapse: false
+      collapse: false,
+      filter: ""
     })
 
 
@@ -126,9 +115,24 @@ export default function Students() {
           fecthProjects()
         }
       } */
+      if(selectedProject !== null) {
+        if(selectedProject.students.length !== 0) {
+          setStudentList(selectedProject.students)
+          setAllStudents(selectedProject.students)
+        }
+      } else {
+        router.push("/partner/projects")
+      }
     },[])
 
 
+    /* handle filter change */
+    const handleFilterChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+      let temp:StudentInt[] = [...allStudents]
+      temp = temp.filter((el:StudentInt) => el.uid.toLocaleLowerCase().includes(e.target.value.toLocaleLowerCase()))
+      setStudentList(temp)
+      setUtils({...utils, filter: e.target.value})
+    }
 
     return (
       <>
@@ -143,8 +147,22 @@ export default function Students() {
             <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-4 md:p-10 pb-20'>
                 {/* header */} 
                 <div className='flex justify-between items-center max-w-5xl m-auto mt-10'>
-                    <h2 className='title text-dark dark:text-light flex-1'>Alumnos solicitantes</h2>
-                    {selectedProject.name}
+                    <h2 className='title text-dark dark:text-light flex-1'>{selectedProject !== null ? selectedProject.name : "-"}</h2>
+                    <div className='flex justify-end items-center'>
+                      <div className='filter__container'>
+                          <SearchRoundedIcon/>
+                          <input placeholder='Busca por matricula' value={utils.filter} onChange={(e) => {handleFilterChange(e)}} className='filter__input'/>
+                      </div>
+                    </div>
+                </div>
+
+                {/* table with students */}
+                <div className='max-w-5xl m-auto mt-8'>
+                    {studentList.length !== 0 && studentList.map((student: StudentInt, i:number) => (
+                      <div key={i}>
+                        <Student student={student}/>
+                      </div>
+                    ))}
                 </div>
 
             </div>

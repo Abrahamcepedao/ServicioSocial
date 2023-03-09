@@ -22,9 +22,6 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import DashboardCustomizeRoundedIcon from '@mui/icons-material/DashboardCustomizeRounded';
 
-//CSS
-import styles from '@/styles/Home.module.css'
-
 //Components
 import SideBar from '@/components/global/Sidebar';
 import { TransparentInput } from '@/components/global/Select';
@@ -43,10 +40,10 @@ import modalities from '@/utils/constants/modalities';
 import inscripcion from '@/utils/constants/inscripcion';
 
 //interfaces
-import ProjectInt from '@/utils/interfaces/ProjectAdmin.interface';
+import ProjectInt from '@/utils/interfaces/Project.interface';
 
 
-//Alert
+//Material UI - Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
   ref,
@@ -302,24 +299,24 @@ export default function Projects() {
                 <div className='flex justify-between items-center max-w-5xl m-auto mt-10'>
                     <h2 className='title text-dark dark:text-light flex-1'>Edita las experiencias</h2>
                     <div className='flex justify-end items-center'>
-                    <div className='filter__container'>
-                        <SearchRoundedIcon/>
-                        <input placeholder='Busca una experiencia' value={utils.filter} onChange={(e) => {handleFilterChange(e)}} className='filter__input'/>
-                    </div>
+                      <div className='filter__container'>
+                          <SearchRoundedIcon/>
+                          <input placeholder='Busca una experiencia' value={utils.filter} onChange={(e) => {handleFilterChange(e)}} className='filter__input'/>
+                      </div>
 
-                    {utils.collapse ? (
-                        <Tooltip title="Cerrar" placement='top'>
-                        <IconButton onClick={() => {setUtils({...utils, collapse: false})}}>
-                            <CancelRoundedIcon className='text-black dark:text-white'/>
-                        </IconButton>
-                        </Tooltip>
-                    ) : (
-                        <Tooltip title="Agregar" placement='top'>
-                        <IconButton onClick={() => {setUtils({...utils, collapse: true})}}>
-                            <DashboardCustomizeRoundedIcon className='text-black dark:text-white'/>
-                        </IconButton>
-                        </Tooltip>
-                    )}
+                      {utils.collapse ? (
+                          <Tooltip title="Cerrar" placement='top'>
+                          <IconButton onClick={() => {setUtils({...utils, collapse: false})}}>
+                              <CancelRoundedIcon className='text-black dark:text-white'/>
+                          </IconButton>
+                          </Tooltip>
+                      ) : (
+                          <Tooltip title="Agregar" placement='top'>
+                          <IconButton onClick={() => {setUtils({...utils, collapse: true})}}>
+                              <DashboardCustomizeRoundedIcon className='text-black dark:text-white'/>
+                          </IconButton>
+                          </Tooltip>
+                      )}
                     </div>
                 </div>
 
@@ -562,13 +559,15 @@ export default function Projects() {
                 {/* table with projects */}
                 <div className='max-w-5xl m-auto mt-8'>
                     {projectsList.length !== 0 && projectsList.map((project: ProjectInt, i:number) => (
-                      <Project project={project} key={i} deleteProject={handleDeleteProject}/>
+                      <div key={i}>
+                        <Project project={project} deleteProject={handleDeleteProject}/>
+                      </div>
                     ))}
                 </div>
             </div>
 
             {/* alert */}
-            <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
+            <Snackbar open={utils.open} autoHideDuration={4000} onClose={handleClose}>
               {/* @ts-ignore */}
               <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
                 {utils.message}

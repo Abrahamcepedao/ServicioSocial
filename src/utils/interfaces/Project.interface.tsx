@@ -1,3 +1,5 @@
+import Student from "./Student.interface"
+
 interface Project {
     name: string,
     key: string,
@@ -14,7 +16,8 @@ interface Project {
     company: string,
     logoUrl: string,
     uid: string,
-    isFav: boolean
+    isFav: boolean,
+    students?: Student[]
 }
 
 export default Project
