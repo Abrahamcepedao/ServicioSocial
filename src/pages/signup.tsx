@@ -164,6 +164,7 @@ export default function SignUp() {
                   
                   <div className='text-center'>
                     <button className='button bg-primary text-white' type='submit'>Registrarse</button>
+                    
                     <p className='mt-10'>¿Ya tienes cuenta?<Link href='/login' className='text-primary underline'> Inicia sesión</Link></p>
                   </div>
                   
