@@ -44,7 +44,7 @@ import modalities from '@/utils/constants/modalities';
 import inscripcion from '@/utils/constants/inscripcion';
 
 //interfaces
-import ProjectInt from '@/utils/interfaces/ProjectAdmin.interface';
+import ProjectInt from '@/utils/interfaces/Project.interface';
 
 
 //Material UI - Alert

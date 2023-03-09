@@ -2,7 +2,7 @@
 import Head from 'next/head'
 import Image from 'next/image';
 import { useRouter } from 'next/router';  
-
+import Link from 'next/link';
 //React
 import React, { useState, useEffect } from 'react'
 
@@ -161,7 +161,10 @@ export default function Partners() {
                   
                   <div className='text-center'>
                     <button className='button bg-primary text-white' type='submit'>Registrarse</button>
-                    <p className='mt-10'>¿Ya tienes cuenta?<a href='/login' className='text-primary underline'> Inicia sesión</a></p>
+                    <div className='flex justify-center items-center mt-4'>
+                        <p className='mr-2'>¿Ya tienes cuenta?</p> 
+                        <Link href='/login' className='text-primary underline'> Inicia sesión</Link>
+                    </div>
                   </div>
                   
               </form>

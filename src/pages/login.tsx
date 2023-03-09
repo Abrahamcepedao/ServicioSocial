@@ -1,6 +1,7 @@
 //Next
 import Head from 'next/head'
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 
@@ -151,7 +152,10 @@ export default function Login() {
                     
                     <div className='text-center'>
                       <button className='button bg-primary text-white' type='submit'>Iniciar sesión</button>
-                      <p className='mt-10'>¿No tienes cuenta?<a href='/signup' className='text-primary underline'> Regístrate</a></p>
+                      <div className='flex justify-center items-center mt-4'>
+                          <p className='mr-2'>¿No tienes cuenta?</p> 
+                          <Link href='/signup' className='text-primary underline'>Regístrate</Link>
+                      </div>
                     </div>
                     
                 </form>

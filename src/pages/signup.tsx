@@ -2,6 +2,7 @@
 import Head from 'next/head'
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 
 //React
 import React, { useState } from 'react'
@@ -21,6 +22,7 @@ import styles from '@/styles/Home.module.css'
 
 //Assets
 import Logo from '../../public/logo.png'
+import LogoW from '../../public/logo_w.png'
 
 //Components
 import ThemeToggler from '@/components/global/ThemeToggler';
@@ -39,6 +41,9 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 export default function SignUp() {
     //context
     const { signup } = useAuth()
+
+    //Theme
+    const { theme } = useTheme()
 
     //useState - formData
     const [formData, setFormData] = useState({
@@ -112,8 +117,8 @@ export default function SignUp() {
         <main className='p-5'>
           <div className='flex flex-col items-center justify-between'>
               <div className='mb-20'>
-                <Image src={Logo} width={200} height={140} alt="Servicio Social"/>
-                <ThemeToggler />
+                <Image src={theme === "light" ? Logo : LogoW} width={200} height={140} alt="Servicio Social"/>
+                {/* <ThemeToggler /> */}
               </div>
               <form onSubmit={(e) => {handleSignUp(e)}} className="flex-1" autoComplete='off'>
                   <div className='grid grid-cols-2 gap-4 mb-8'>
@@ -164,8 +169,11 @@ export default function SignUp() {
                   
                   <div className='text-center'>
                     <button className='button bg-primary text-white' type='submit'>Registrarse</button>
+                    <div className='flex justify-center items-center mt-4'>
+                        <p className='mr-2'>¿Ya tienes cuenta?</p> 
+                        <Link href='/login' className='text-primary underline'> Inicia sesión</Link>
+                    </div>
                     
-                    <p className='mt-10'>¿Ya tienes cuenta?<Link href='/login' className='text-primary underline'> Inicia sesión</Link></p>
                   </div>
                   
               </form>
