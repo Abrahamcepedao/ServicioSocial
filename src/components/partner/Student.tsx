@@ -90,7 +90,7 @@ const Student = ({student}:AppProps) => {
                         <h3 className='subtitle'>{student.name}</h3>
                     </div>
                     <div>
-                        <div className='bg-secondary pt-1 pb-1 pl-4 pr-4 rounded-lg'>{student.status}</div>
+                        <div className='bg-secondary pt-1 pb-1 pl-4 pr-4 rounded-xl'>{student.status}</div>
                     </div>
                 </div>   
 
