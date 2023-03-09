@@ -13,7 +13,7 @@ import { ProjectsContextProvider } from '@/context/ProjectsContext'
 import { useRouter } from 'next/router'
 import ProtectedRoute from '../components/auth/ProtectedRoute'
 
-const noAuthRequired:string[] = ['/', '/login', '/signup', '/register/students', '/register/partners']
+const noAuthRequired:string[] = ['/', '/signup', '/register/students', '/register/partners']
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()

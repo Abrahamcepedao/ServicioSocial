@@ -171,7 +171,7 @@ export default function SignUp() {
                     <button className='button bg-primary text-white' type='submit'>Registrarse</button>
                     <div className='flex justify-center items-center mt-4'>
                         <p className='mr-2'>¿Ya tienes cuenta?</p> 
-                        <Link href='/login' className='text-primary underline'> Inicia sesión</Link>
+                        <Link href='/' className='text-primary underline'> Inicia sesión</Link>
                     </div>
                     
                   </div>
