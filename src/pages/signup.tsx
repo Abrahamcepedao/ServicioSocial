@@ -173,7 +173,6 @@ export default function SignUp() {
                         <p className='mr-2'>¿Ya tienes cuenta?</p> 
                         <Link href='/' className='text-primary underline'> Inicia sesión</Link>
                     </div>
-                    
                   </div>
                   
               </form>
