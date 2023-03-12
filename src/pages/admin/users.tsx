@@ -21,7 +21,6 @@ import FormLabel from '@mui/material/FormLabel';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
@@ -30,6 +29,7 @@ import NumbersRoundedIcon from '@mui/icons-material/NumbersRounded';
 import PendingActionsRoundedIcon from '@mui/icons-material/PendingActionsRounded';
 import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+import PsychologyRoundedIcon from '@mui/icons-material/PsychologyRounded';
 import { AttachFileRounded } from '@mui/icons-material';
 
 //CSS
@@ -43,7 +43,9 @@ import SideBar from '@/components/global/Sidebar';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
-
+import Student from '@/components/admin/Student';
+import Partner from '@/components/admin/Partner';
+import Admin from '@/components/admin/Admin';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -55,10 +57,17 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export default function Users() {
     //context
-    const { createStudent, createPartner } = useAuth()
+    const { createStudent, createPartner, users, getUsers } = useAuth()
 
     //router
     const router = useRouter()
+
+    //useState - users
+    const [state, setState] = useState({
+      users: [],
+      usersList: [],
+      userType: "all"
+    })
 
     //useState - formData
     const [formData, setFormData] = useState({
@@ -75,7 +84,8 @@ export default function Users() {
         mail: "",
         carrera: "",
         semestre: "",
-        horas: ""
+        horas: "",
+        promedio: ""
     })
 
     //useState - partner
@@ -94,6 +104,11 @@ export default function Users() {
       collapse: false
     })
 
+    //useEffect
+    useEffect(() => {
+      fetchUsers()
+    },[])
+
     /* handle alert close */
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {
@@ -102,6 +117,25 @@ export default function Users() {
 
       setUtils({...utils, open: false});
     };
+
+    /* handle fecth users */
+    const fetchUsers = async () => {
+      const res = await getUsers()
+      if(res !== false) {
+        setState({
+          ...state,
+          users: res,
+          usersList: res,
+        })
+      } else {
+        setUtils({
+          ...utils,
+          message: "Error el obtener usuarios",
+          severity: "error",
+          open: true,
+        })
+      }
+    }
 
     /* const handle input change */
      /* handle input change */
@@ -176,7 +210,8 @@ export default function Users() {
               student.matricula,
               student.carrera,
               Number(student.semestre),
-              Number(student.horas)
+              Number(student.horas),
+              Number(student.promedio)
             )
             if(res) {
               setUtils({
@@ -225,6 +260,18 @@ export default function Users() {
             }
         }
       }
+    }
+
+    /* handle user type click */
+    const handleUserTypeClick = (userType: string) => {
+
+      const temp = state.users.filter((el) => el.type === userType)
+      setState({
+        ...state,
+        userType,
+        usersList: userType !== "all" ? temp : state.users
+      })
+      
     }
 
     return (
@@ -361,6 +408,20 @@ export default function Users() {
                         </div>
                       )}
 
+                      {/* promedio */}
+                      {formData.type === "student" && (
+                        <div className='input__container '>
+                          <PsychologyRoundedIcon/>
+                          <input 
+                            name='promedio' placeholder='Ingrese su promedio'
+                            type="text"
+                            autoComplete='off'
+                            value={student.promedio} onChange={(e) => {handleStudentChange(e)}}
+                            className="input"
+                          />
+                        </div>
+                      )}
+
                       {/* horas de servico */}
                       {formData.type === "student" && (
                         <div className='input__container '>
@@ -376,10 +437,6 @@ export default function Users() {
                       )}
 
                       {/* <--------socio---------> */}
-                      {/* company: "",
-                        key: "",
-                        logoImg: "",
-                        logoUrl: "" */}
                       {/* key */}
                       {formData.type === "partner" && (
                         <div className='input__container '>
@@ -433,6 +490,43 @@ export default function Users() {
                   </form>
                 </div>
               </Collapse>
+
+              {/* filter users */}
+              <div className='max-w-5xl m-auto mt-10 flex justify-start items-start'>
+                <div 
+                  onClick={() => {handleUserTypeClick("all")}}
+                  className='rounded-xl border-2 border-all pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                  style={{background: state.userType === "all" ? "#968d87" : "none"}}>Todos</div>
+                <div 
+                  onClick={() => {handleUserTypeClick("student")}}
+                  className='rounded-xl border-2 border-student pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                  style={{background: state.userType === "student" ? "#d6192c" : "none"}}>Alumnos</div>
+                <div 
+                  onClick={() => {handleUserTypeClick("partner")}}
+                  className='rounded-xl border-2 border-partner pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                  style={{background: state.userType === "partner" ? "#17c4be" : "none"}}>Socios</div>
+                <div 
+                  onClick={() => {handleUserTypeClick("admin")}}
+                  className='rounded-xl border-2 border-admin pl-4 pr-4 pt-2 pb-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                  style={{background: state.userType === "admin" ? "#1973c6" : "none"}}>Admins</div>
+              </div>
+              
+              {/* list of users */}
+              <div className='max-w-5xl m-auto mt-10'>
+                  {state.usersList.length !== 0 && state.usersList.map((item:any, i:number) => (
+                    <div key={i}>
+                      {item.type === "student" && (
+                        <Student student={item}/>
+                      )}
+                      {item.type === "partner" && (
+                        <Partner partner={item}/>
+                      )}
+                      {item.type === "admin" && (
+                        <Admin admin={item}/>
+                      )}
+                    </div>
+                  ))}
+              </div>
               
             </div>
 

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 //Material UI
-import {Collapse} from '@mui/material';
+import { Collapse, IconButton, Tooltip } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
@@ -17,6 +17,8 @@ import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import ContactPhoneRoundedIcon from '@mui/icons-material/ContactPhoneRounded';
 import PsychologyRoundedIcon from '@mui/icons-material/PsychologyRounded';
 import BadgeIcon from '@mui/icons-material/Badge';
+import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 //interfaces
 import Student from '@/utils/interfaces/Student.interface';
@@ -77,8 +79,20 @@ const Student = ({student}:AppProps) => {
                     <div>
                         <h3 className='subtitle'>{student.name}</h3>
                     </div>
-                    <div>
-                        <div className='bg-secondary pt-1 pb-1 pl-4 pr-4 rounded-xl'>{student.status}</div>
+                    <div className='flex flex-col items-end'>
+                      <div className='bg-student pt-1 pb-1 pl-4 w-10 mb-2 pr-4 rounded-xl'></div>
+                      <div className='flex justify-end items-center'>
+                          <Tooltip title="Editar" placement='top'>
+                              <IconButton>
+                                <CreateRoundedIcon className='text-black dark:text-white transition-transform duration-500 hover:scale-110'/>
+                              </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Eliminar" placement='top'>
+                              <IconButton>
+                                <DeleteRoundedIcon className='text-black dark:text-white transition-transform duration-500 hover:scale-110'/>
+                              </IconButton>
+                          </Tooltip>
+                      </div>
                     </div>
                 </div>   
 
@@ -112,7 +126,6 @@ const Student = ({student}:AppProps) => {
                         <PsychologyRoundedIcon/>
                         <p>{student.promedio}</p>
                     </div>
-                    {/* <button onClick={() => {handleViewStudents()}} className='button__sm bg-primary text-white'>Ver alumnos</button> */}
                 </div>
 
                 {/* collapse */}

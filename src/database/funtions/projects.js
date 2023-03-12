@@ -190,5 +190,5 @@ export {
     getProjectsOrg, 
     getAllProjects,
     registerStudentFirebase,
-    unregisterStudentFirebase
+    unregisterStudentFirebase,
 }
