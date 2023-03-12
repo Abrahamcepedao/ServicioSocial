@@ -214,12 +214,15 @@ const Project = ({project, deleteFromFav}:AppProps) => {
                         <InterpreterModeRoundedIcon/>
                         <p>{project.inscripcion === "Inscripción por entrevista" ? "Entrevista" : "IRIS"}</p>
                     </div>
-                    {state.isRegistered ? (
-                        <button onClick={() => {handleUnregisterClick()}} className='button__sm bg-secondary text-white'>Eliminar registro</button>
-                    ) : (
-                        <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white'>Registrar experiencia</button>
+                    {user.type === "student" && (
+                        <>
+                            {state.isRegistered ? (
+                                <button onClick={() => {handleUnregisterClick()}} className='button__sm bg-secondary text-white'>Eliminar registro</button>
+                            ) : (
+                                <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white'>Registrar experiencia</button>
+                            )}
+                        </>
                     )}
-                    
                 </div>
 
                 {/* collapse */}

@@ -7,7 +7,15 @@ import {
 from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { auth } from '../database/firebase'
-import { addUser, getUser, addStudent, signedUpStudent, addPartner, signedUpPartner } from '../database/funtions/auth'
+import { 
+    addUser, 
+    getUser, 
+    addStudent, 
+    signedUpStudent, 
+    addPartner, 
+    signedUpPartner,
+    getUsersFirebase 
+} from '../database/funtions/auth'
 
 const AuthContext = createContext<any>({})
 
@@ -15,6 +23,8 @@ export const useAuth = () => useContext(AuthContext)
 
 export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
     const [user,setUser] = useState<any>(null)
+    const [users, setUsers] = useState<Array<any>>([])
+    const [selectedUser, setSelectedUser] = useState<any>(null)
     const [loading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
@@ -74,8 +84,7 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
     }
 
 
-
-
+    //handle loginn
     const login = async (mail:string, password:string) => {
         return signInWithEmailAndPassword(auth, mail, password)
             .then(async (result) => {
@@ -85,12 +94,14 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
             })
     }
 
+    //handle logout
     const logout = async() => {
         setUser(null)
         await signOut(auth)
     }
 
-    const createStudent = async (mail:string, phone:string, name:string, matricula:string, carrera:string, semestre:number, horas: number) => {
+    //create student
+    const createStudent = async (mail:string, phone:string, name:string, matricula:string, carrera:string, semestre:number, horas: number, promedio:number) => {
         const temp = {
             uid: matricula,
             mail,
@@ -99,14 +110,13 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
             carrera,
             semestre,
             horas,
+            promedio,
             type: "student"
         }
-        console.log(temp)
-        const res = await addStudent(temp)
-        console.log(res)
-        return res
+        return await addStudent(temp)
     }
 
+    //create partner
     const createPartner = async (mail:string, phone:string, name:string, company:string, key:string, file:File, fileName:string) => {
         const temp = {
             uid: key,
@@ -120,12 +130,20 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
             type: "partner"
         }
         
-        const res = await addPartner(temp)
-        console.log(res)
-        return res
+        return await addPartner(temp)
     }
 
-    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, signupStudent, signupPartner}}>
+    //handle get users
+    const getUsers = async() => {
+        const res = await getUsersFirebase()
+        if(res !== false) {
+            setUsers(res)
+            return res
+        } 
+        return false
+    }
+
+    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, signupStudent, signupPartner, getUsers, users}}>
         {loading ? null : children}
     </AuthContext.Provider>
 }

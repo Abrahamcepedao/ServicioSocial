@@ -181,4 +181,27 @@ const getUser = async (mail) => {
     }
 }
 
-export { addUser, getUser, addStudent, addPartner, signedUpStudent, signedUpPartner }
+const getUsersFirebase = async () => {
+    try {   
+        const usersRef = collection(db, 'users')
+        const snapshot = await getDocs(usersRef)
+        let data = []
+        snapshot.docs.forEach((item) => {
+            data.push(item.data())
+        })
+        console.log(data)
+        return data
+    } catch(error) {
+        return false
+    }
+}
+
+export { 
+    addUser, 
+    getUser, 
+    addStudent, 
+    addPartner, 
+    signedUpStudent, 
+    signedUpPartner,
+    getUsersFirebase
+}

@@ -5,21 +5,18 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 //Material UI
-import {Collapse} from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
-import ComputerRoundedIcon from '@mui/icons-material/ComputerRounded';
-import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import ContactPhoneRoundedIcon from '@mui/icons-material/ContactPhoneRounded';
-import PsychologyRoundedIcon from '@mui/icons-material/PsychologyRounded';
-import BadgeIcon from '@mui/icons-material/Badge';
+import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 //interfaces
-import Student from '@/utils/interfaces/Student.interface';
+import IAdmin from '@/utils/interfaces/Admin.interface';
 
 //Material UI - Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -30,11 +27,11 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 type AppProps = {
-    student: Student,
+    admin: IAdmin,
     //deleteProject: (uid:string) => void
 };
 
-const Student = ({student}:AppProps) => {
+const Admin = ({admin}:AppProps) => {
     //context
     //const { setProject } = useProjects()
 
@@ -56,7 +53,7 @@ const Student = ({student}:AppProps) => {
 
     //useEffect
     useEffect(() => {
-        console.log(student)
+        console.log(admin)
     },[])
 
     /* handle alert close */
@@ -75,54 +72,37 @@ const Student = ({student}:AppProps) => {
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>
                     <div>
-                        <h3 className='subtitle'>{student.name}</h3>
+                        
+                        <h3 className='subtitle'>{admin.name}</h3>
                     </div>
-                    <div>
-                        <div className='bg-secondary pt-1 pb-1 pl-4 pr-4 rounded-xl'>{student.status}</div>
+                    <div className='flex flex-col items-end'>
+                      <div className='bg-admin pt-1 pb-1 pl-4 w-10 mb-2 pr-4 rounded-xl'></div>
+                      <div className='flex justify-end items-center'>
+                          <Tooltip title="Editar" placement='top'>
+                              <IconButton>
+                                <CreateRoundedIcon className='text-black dark:text-white transition-transform duration-500 hover:scale-110'/>
+                              </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Eliminar" placement='top'>
+                              <IconButton>
+                                <DeleteRoundedIcon className='text-black dark:text-white transition-transform duration-500 hover:scale-110'/>
+                              </IconButton>
+                          </Tooltip>
+                      </div>
                     </div>
                 </div>   
 
                 {/* lower */}         
-                <div className='grid grid-cols-7 mb-4'>
-                    <div className='opacity-50'>
-                        <BadgeIcon/>
-                        <p>{student.uid}</p>
-                    </div>
+                <div className='grid grid-cols-4 mb-4'>
                     <div className='opacity-50'>
                         <EmailRoundedIcon/>
-                        <p>{student.mail}</p>
+                        <p>{admin.mail}</p>
                     </div>
                     <div className='opacity-50'>
                         <ContactPhoneRoundedIcon/>
-                        <p>{student.phone}</p>
+                        <p>{admin.phone}</p>
                     </div>
-                    <div className='opacity-50'>
-                        <SchoolRoundedIcon/>
-                        <p>{student.carrera}</p>
-                    </div>
-                    <div className='opacity-50'>
-                        <WatchLaterRoundedIcon/>
-                        <p>{student.horas}</p>
-                    </div>
-                    <div className='opacity-50'>
-                        <ComputerRoundedIcon/>
-                        <p>{student.semestre}</p>
-                    </div>
-                    <div className='opacity-50'>
-                        <PsychologyRoundedIcon/>
-                        <p>{student.promedio}</p>
-                    </div>
-                    {/* <button onClick={() => {handleViewStudents()}} className='button__sm bg-primary text-white'>Ver alumnos</button> */}
                 </div>
-
-                {/* collapse */}
-                <Collapse in={state.open}>
-                    <div className='flex justify-between items-center'>
-                        <div className='opacity-50'>
-                            <p>Clave: <b>{student.semestre}</b></p>
-                        </div>
-                    </div>
-                </Collapse>
             </div>
 
 
@@ -138,4 +118,4 @@ const Student = ({student}:AppProps) => {
     )
 }
 
-export default Student
+export default Admin
