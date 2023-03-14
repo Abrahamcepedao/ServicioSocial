@@ -14,8 +14,11 @@ import {
     signedUpStudent, 
     addPartner, 
     signedUpPartner,
+    addAdmin,
+    signedUpAdmin,
     getUsersFirebase 
 } from '../database/funtions/auth'
+import { error } from 'console'
 
 const AuthContext = createContext<any>({})
 
@@ -83,6 +86,18 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         })
     }
 
+    const signupAdmin = async(mail:string, password:string) => {
+        return await createUserWithEmailAndPassword(auth, mail, password).then(async (result) => {
+            //get student and set data
+            const res = await signedUpPartner(mail)
+            if(res !== false) {
+                setUser(res)
+            } else {
+                return false
+            }
+        })
+    }
+
 
     //handle loginn
     const login = async (mail:string, password:string) => {
@@ -91,6 +106,18 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
                 const item = await getUser(mail)
                 console.log(item)
                 setUser(item)
+                return true
+            }).catch((error) => {
+                var errorMessage = error.message
+                console.log(errorMessage)
+                if(errorMessage === "Firebase: Error (auth/user-not-found)."){
+                    errorMessage = "No existe el usuario"
+                } else if(errorMessage === "Firebase: Error (auth/invalid-email)."){
+                    errorMessage = "Formato de email incorrecto"
+                } else{
+                    errorMessage = "Contraseña incorrecta. Favor de ingresarla de nuevo."
+                }
+                return errorMessage
             })
     }
 
@@ -133,6 +160,18 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         return await addPartner(temp)
     }
 
+    //create admin
+    const createAdmin = async (mail: string, phone:string, name: string) => {
+        const temp = {
+            mail,
+            phone, 
+            name,
+            type: "admin"
+        }
+
+        return await addAdmin(temp)
+    }
+
     //handle get users
     const getUsers = async() => {
         const res = await getUsersFirebase()
@@ -143,7 +182,7 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         return false
     }
 
-    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, signupStudent, signupPartner, getUsers, users}}>
+    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, createAdmin, signupStudent, signupPartner, signupAdmin, getUsers, users}}>
         {loading ? null : children}
     </AuthContext.Provider>
 }

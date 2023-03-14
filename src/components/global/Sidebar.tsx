@@ -48,7 +48,7 @@ const SideBar = () => {
 
     return (
         <>
-            <div className="bg-light dark:bg-dark w-44 fixed top-0 left-0 h-screen justify-between items-center flex-col hidden lg:flex">
+            <div className="bg-lightAlt dark:bg-darkAlt w-44 fixed top-0 left-0 h-screen justify-between items-center flex-col hidden lg:flex">
 
                 {/* logo */}
                 <div className="w-full p-5">

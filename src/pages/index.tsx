@@ -105,10 +105,18 @@ export default function Login() {
     }
 
     /* handle sign up */
-    const handleLogin = (e:React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async(e:React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if(verifyForm()) {
-        login(formData.maiil, formData.passsword)
+        const res = await login(formData.maiil, formData.passsword)
+        if(res !== true) {
+          setUtils({
+            ...utils,
+            open: true,
+            severity: 'error',
+            message: res
+          })
+        }
       }
     }
 
@@ -127,7 +135,7 @@ export default function Login() {
                 {/* <ThemeToggler /> */}
               </div>
               <div className='flex flex-col items-center justify-center flex-1'>
-                <form onSubmit={(e) => {handleLogin(e)}} className="flex-1" autoComplete='off'>
+                <form onSubmit={(e) => {handleLogin(e)}} className="flex-1 max-h-32" autoComplete='off'>
                     <div className='grid grid-cols-2 gap-4 mb-8'>
                         <div className='input__container '>
                           <EmailRoundedIcon/>

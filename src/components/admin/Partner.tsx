@@ -71,14 +71,14 @@ const Partner = ({partner}:AppProps) => {
 
     return (
         <div>
-            <div className="bg-light-gray  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">    
+            <div className="bg-darkAlt  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">    
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>
                     <div>
                         <img className='rounded-lg w-20 h-auto mb-2' src={`${partner.fileUrl}`}/>
                     </div>
                     <div className='flex flex-col items-end'>
-                      <div className='bg-student pt-1 pb-1 pl-4 w-10 mb-2 pr-4 rounded-xl'></div>
+                      <div className='bg-partner pt-1 pb-1 pl-4 w-10 mb-2 pr-4 rounded-xl'></div>
                       <div className='flex justify-end items-center'>
                           <Tooltip title="Editar" placement='top'>
                               <IconButton>
