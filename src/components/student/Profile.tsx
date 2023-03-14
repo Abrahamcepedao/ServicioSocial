@@ -53,10 +53,14 @@ const Profile = () => {
 
     return (
         <div>
-            <div className="bg-darkAlt  text-sm pt-4 pb-4 text-left rounded-lg mb-4">
-                <div className='grid grid-cols-2 mb-4'>
+            <div className="text-sm pt-4 pb-4 text-left rounded-lg mb-4">
+                <div className='grid grid-rows-2 xl:grid-rows-1 xl:grid-cols-2 gap-3 mb-4'>
                     {user!== null && (
-                        <div className='grid grid-cols-3'>
+                        <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+                            <div className='opacity-50'>
+                                <BadgeIcon/>
+                                <p>{user.name}</p>
+                            </div>
                             <div className='opacity-50'>
                                 <BadgeIcon/>
                                 <p>{user.uid}</p>
@@ -72,7 +76,7 @@ const Profile = () => {
                         </div>
                     )}
                     {user!== null && (
-                        <div className='grid grid-cols-4'>
+                        <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
                             <div className='opacity-50'>
                                 <SchoolRoundedIcon/>
                                 <p>{user.carrera}</p>

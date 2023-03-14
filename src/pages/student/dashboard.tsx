@@ -52,7 +52,7 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -79,9 +79,9 @@ export default function Dashboard() {
         </Head>
         <main className=''>
             <SideBar/>
-            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-20'>
+            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative pt-10 p-5 md:p-10 xl:p-20'>
               <div className='mb-4'>
-                <h2 className='subtitle'>Tu perfil</h2>
+                <h2 className='title text-black dark:text-white'>Tu perfil</h2>
               </div>
 
               <div className='rounded-xl bg-lightAlt dark:bg-darkAlt p-5'>

@@ -107,7 +107,7 @@ const registerStudentFirebase = async (project, student) => {
             phone: student.phone,
             semestre: student.semestre,
             promedio: student.promedio,
-            signeUp: student.signeUp,
+            signedUp: student.signedUp,
             type: student.type,
             uid: student.uid
         }
@@ -116,6 +116,12 @@ const registerStudentFirebase = async (project, student) => {
         let payload = {
             ...project,
             students
+        }
+        if(project.inscripcion === "Inscripción por IRIS"){
+            payload = {
+                ...payload,
+                occupied: project.occupied + 1
+            }
         }
         console.log(payload)
 
@@ -127,7 +133,7 @@ const registerStudentFirebase = async (project, student) => {
             hours: project.hours,
             inscripcion: project.inscripcion,
             availability: project.availability,
-            occupied: project.occupied,
+            occupied: payload.occupied,
             duration: project.duration,
             carrerasList: project.carrerasList,
             modality: project.modality,
@@ -145,7 +151,7 @@ const registerStudentFirebase = async (project, student) => {
 
         await updateDoc(docRef, payload)
         await updateDoc(userRef, userPayload)
-        return true
+        return payload
     } catch(error) {
         console.log(error)
         return false
@@ -166,6 +172,12 @@ const unregisterStudentFirebase = async (project, student) => {
             ...project,
             students
         }
+        if(project.inscripcion === "Inscripción por IRIS"){
+            payload = {
+                ...payload,
+                occupied: project.occupied - 1 < 0 ? 0 : project.occupied - 1 
+            }
+        }
         console.log(payload)
 
         let userPayload = {
@@ -176,7 +188,7 @@ const unregisterStudentFirebase = async (project, student) => {
 
         await updateDoc(docRef, payload)
         await updateDoc(userRef, userPayload)
-        return true
+        return payload
     } catch(error) {
         console.log(error)
         return false

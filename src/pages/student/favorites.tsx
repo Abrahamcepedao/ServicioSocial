@@ -93,9 +93,13 @@ export default function Favorites() {
 
                 {/* project list */}
                 <div>
-                    {projectsList.length !== 0 && projectsList.map((item:ProjectInt, i:number) => (
+                    {projectsList.length !== 0 ? projectsList.map((item:ProjectInt, i:number) => (
                       <Project key={i} project={item} deleteFromFav={handleDeleteFromFav}/>
-                    ))}
+                    )) : (
+                      <div className='rounded-xl bg-lightAlt dark:bg-darkAlt p-5'>
+                        <h2 className='subtitle text-black dark:text-white'>Todavía no agregas proyectos a tu lista de favoritos</h2>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

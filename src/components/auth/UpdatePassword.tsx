@@ -28,7 +28,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 const UpdatePassword = () => {
     //context
-    const { user } = useAuth()
+    const { user, changePassword } = useAuth()
 
     //useState - open
     const [formData, setFormData] = useState({
@@ -44,6 +44,15 @@ const UpdatePassword = () => {
       severity: "error",
     })
 
+    /* handle alert close */
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setUtils({...utils, open: false});
+    };
+
     /* handle input change  - formdata */
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
       setFormData({
@@ -52,15 +61,62 @@ const UpdatePassword = () => {
       })
     }
 
+    const verifyForm = () => {
+        if(formData.password !== formData.confirmPassword) {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: "error",
+                message: "Las contraseñas deben coincidir."
+            })
+            return false
+        }
+        if(formData.current === "") {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: "error",
+                message: "Ingrese la contraseña actual."
+            })
+            return false
+        }
+        return true
+    }
+
+    const handleUpdatePassword = async (e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if(verifyForm()) {
+            //updatae
+            if(user) {
+                const res = await changePassword(formData.current, formData.password)
+                if(res !== true) {
+                    setUtils({
+                        ...utils,
+                        open: true,
+                        severity: "error",
+                        message: res
+                    })
+                } else {
+                    setUtils({
+                        ...utils,
+                        open: true,
+                        severity: "success",
+                        message: "¡Contraseña actualizada con éxito!"
+                    })
+                }
+            }
+        }
+    }
+
 
     return (
         <div>
-            <h2 className='subtitle mb-4'>Cambia tu contraseña</h2>
+            <h2 className='subtitle mb-4 text-black dark:text-white'>Cambia tu contraseña</h2>
 
             {/* info message */}
 
             <div>
-                <form className='grid grid-cols-2 gap-4'>
+                <form className='grid grid-cols-2 gap-4' onSubmit={(e) => {handleUpdatePassword(e)}}>
                     <div className='input__container '>
                         <LockRoundedIcon/>
                         <input 
@@ -94,7 +150,13 @@ const UpdatePassword = () => {
                 </form>
             </div>
 
-
+            {/* alert */}
+            <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
+                {/* @ts-ignore */}
+                <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
+                {utils.message}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }

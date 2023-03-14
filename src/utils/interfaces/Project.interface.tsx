@@ -17,7 +17,8 @@ interface Project {
     logoUrl: string,
     uid: string,
     isFav: boolean,
-    students?: Student[]
+    students?: Student[],
+    accepted?: Student[]
 }
 
 export default Project

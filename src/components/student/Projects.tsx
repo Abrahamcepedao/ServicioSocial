@@ -56,9 +56,9 @@ const Projects = () => {
 
     return (
         <div>
-            <h2 className='subtitle'>Proyecto actual</h2>
+            <h2 className='subtitle text-black dark:text-white'>Proyecto actual</h2>
 
-            <h2 className='subtitle'>Proyectos pasados</h2>
+            <h2 className='subtitle text-black dark:text-white'>Proyectos pasados</h2>
         </div>
     )
 }
