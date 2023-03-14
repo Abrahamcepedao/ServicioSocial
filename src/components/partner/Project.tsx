@@ -91,7 +91,7 @@ const Project = ({project, deleteProject}:AppProps) => {
 
     return (
         <div>
-            <div className="bg-light-gray  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">    
+            <div className="bg-darkAlt  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">    
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>
                     <div>

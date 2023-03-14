@@ -115,67 +115,69 @@ export default function SignUp() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className='p-5'>
-          <div className='flex flex-col items-center justify-between'>
+          <div className='flex flex-col items-center justify-between min-h-screen p-20'>
               <div className='mb-20'>
                 <Image src={theme === "light" ? Logo : LogoW} width={200} height={140} alt="Servicio Social"/>
                 {/* <ThemeToggler /> */}
               </div>
-              <form onSubmit={(e) => {handleSignUp(e)}} className="flex-1" autoComplete='off'>
-                  <div className='grid grid-cols-2 gap-4 mb-8'>
-                      <div className='input__container '>
-                        <EmailRoundedIcon/>
-                        <input 
-                          name='mail' placeholder='Ingrese su mail'
-                          autoComplete='off'
-                          value={formData.mail} onChange={(e) => {handleInputChange(e)}}
-                          className="input"
-                        />
-                      </div>
-                      <div className='input__container '>
-                        <PersonRoundedIcon/>
-                        <input 
-                          name='name' placeholder='Ingrese su nombre completo'
-                          value={formData.name} onChange={(e) => {handleInputChange(e)}}
-                          className="input"
-                        />
-                      </div>
-                      <div className='input__container '>
-                        <LocalPhoneRoundedIcon/>
-                        <input 
-                          name='phone' placeholder='Ingrese su teléfono'
-                          value={formData.phone} onChange={(e) => {handleInputChange(e)}}
-                          className="input"
-                        />
-                      </div>
-                      <div className='input__container '>
-                        <LockRoundedIcon/>
-                        <input 
-                          name='password' placeholder='Ingrese su contraseña'
-                          type="password" autoComplete='new-password'
-                          value={formData.password} onChange={(e) => {handleInputChange(e)}}
-                          className="input"
-                        />
-                      </div>
-                      <div className='input__container '>
-                        <LockRoundedIcon/>
-                        <input 
-                          name='confirmPassword' placeholder='Confirme su contraseña'
-                          type="password" autoComplete='new-password'
-                          value={formData.confirmPassword} onChange={(e) => {handleInputChange(e)}}
-                          className="input"
-                        />
-                      </div>
-                  </div>
-                  
-                  <div className='text-center'>
-                    <button className='button bg-primary text-white' type='submit'>Registrarse</button>
-                    <div className='flex justify-center items-center mt-4'>
-                        <p className='mr-2'>¿Ya tienes cuenta?</p> 
-                        <Link href='/' className='text-primary underline'> Inicia sesión</Link>
+              <div className='flex flex-col items-center justify-center flex-1'>
+                <form onSubmit={(e) => {handleSignUp(e)}} className="flex-1 max-h-96" autoComplete='off'>
+                    <div className='grid grid-cols-2 gap-4 mb-8'>
+                        <div className='input__container '>
+                          <EmailRoundedIcon/>
+                          <input 
+                            name='mail' placeholder='Ingrese su mail'
+                            autoComplete='off'
+                            value={formData.mail} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
+                        <div className='input__container '>
+                          <PersonRoundedIcon/>
+                          <input 
+                            name='name' placeholder='Ingrese su nombre completo'
+                            value={formData.name} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
+                        <div className='input__container '>
+                          <LocalPhoneRoundedIcon/>
+                          <input 
+                            name='phone' placeholder='Ingrese su teléfono'
+                            value={formData.phone} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
+                        <div className='input__container '>
+                          <LockRoundedIcon/>
+                          <input 
+                            name='password' placeholder='Ingrese su contraseña'
+                            type="password" autoComplete='new-password'
+                            value={formData.password} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
+                        <div className='input__container '>
+                          <LockRoundedIcon/>
+                          <input 
+                            name='confirmPassword' placeholder='Confirme su contraseña'
+                            type="password" autoComplete='new-password'
+                            value={formData.confirmPassword} onChange={(e) => {handleInputChange(e)}}
+                            className="input"
+                          />
+                        </div>
                     </div>
-                  </div>
-                  
-              </form>
+                    
+                    <div className='text-center'>
+                      <button className='button bg-primary text-white' type='submit'>Registrarse</button>
+                      <div className='flex justify-center items-center mt-4'>
+                          <p className='mr-2'>¿Ya tienes cuenta?</p> 
+                          <Link href='/' className='text-primary underline'> Inicia sesión</Link>
+                      </div>
+                    </div>
+                    
+                </form>
+              </div>
           </div>
 
           {/* alert */}

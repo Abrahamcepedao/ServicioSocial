@@ -67,7 +67,7 @@ export default function Dashboard() {
         </Head>
         <main className=''>
             <SideBar/>
-            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-primary lg:left-44 relative p-10'>
+            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-10'>
               <h1>Dashboard</h1>
             </div>
         </main>

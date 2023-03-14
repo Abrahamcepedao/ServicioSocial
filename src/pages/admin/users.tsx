@@ -57,7 +57,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export default function Users() {
     //context
-    const { createStudent, createPartner, users, getUsers } = useAuth()
+    const { createStudent, createPartner, createAdmin, users, getUsers } = useAuth()
 
     //router
     const router = useRouter()
@@ -73,7 +73,6 @@ export default function Users() {
     const [formData, setFormData] = useState({
       maiil: "",
       name: "",
-      passsword: "",
       phone: "",
       type: "student"
     })
@@ -230,7 +229,7 @@ export default function Users() {
                 collapse: false
               })
             }
-        } else {
+        } else if(formData.type === "partner") {
             const res = await createPartner(
               formData.maiil,
               formData.phone,
@@ -258,7 +257,33 @@ export default function Users() {
                 collapse: false
               })
             }
+        } else {
+          const res = await createAdmin(
+              formData.maiil,
+              formData.phone,
+              formData.name,
+            )
+
+            if(res) {
+              setUtils({
+                ...utils,
+                open: true,
+                severity: 'success',
+                message: "Se registró el usuario administrador exitosamente",
+                collapse: false,
+              })
+            } else {
+              setUtils({
+                ...utils,
+                open: true,
+                severity: 'error',
+                message: "Error al registrar el usuario administrador. Inténtelo de nuevo.",
+                collapse: false
+              })
+            }
         }
+
+        fetchUsers()
       }
     }
 
@@ -330,6 +355,7 @@ export default function Users() {
                         >
                           <FormControlLabel value="student" control={<Radio />} label="Alumno" />
                           <FormControlLabel value="partner" control={<Radio />} label="Socio" />
+                          <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                         </RadioGroup>
                       </FormControl>
 
@@ -483,7 +509,7 @@ export default function Users() {
                     </div>
 
                     <div className='text-center'>
-                      <button className='button bg-primary text-white' type='submit'>Registrar {formData.type === "student" ? "estudiante" : "organización"}</button>
+                      <button className='button bg-primary text-white' type='submit'>Registrar {formData.type === "student" ? "estudiante" : formData.type === "partner" ? "organización" : "administrador"}</button>
                     </div>
 
 

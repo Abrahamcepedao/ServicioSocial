@@ -158,6 +158,50 @@ const signedUpPartner = async (key) => {
     }
 } 
 
+const addAdmin = async (user) => {
+    try {
+        const docRef = doc(db, 'users', user.mail)
+        const payload = {
+            uid: user.mail,
+            mail: user.mail,
+            phone: user.phone,
+            name: user.name,
+            signedUp: false
+        }
+
+        console.log(payload)
+        await setDoc(docRef, payload)
+        return true
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
+
+const signedUpAdmin = async (mail) => {
+    try {
+        const docRef = doc(db, 'users', mail)
+        const res = await getDoc(docRef)
+        
+        const temp = res.data()
+        console.log(temp)
+
+        const payload = {
+            uid: temp.uid,
+            mail: temp.mail,
+            phone: temp.phone,
+            name: temp.name,
+            signedUp: true
+        }
+        await setDoc(docRef, payload)
+        return payload
+
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+} 
+
 const getUser = async (mail) => {
     try {
         console.log(mail)
@@ -201,7 +245,9 @@ export {
     getUser, 
     addStudent, 
     addPartner, 
+    addAdmin,
     signedUpStudent, 
     signedUpPartner,
-    getUsersFirebase
+    signedUpAdmin,
+    getUsersFirebase,
 }
