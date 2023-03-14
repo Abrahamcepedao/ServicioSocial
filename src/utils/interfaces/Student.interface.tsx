@@ -12,7 +12,8 @@ interface Student {
     type: string,
     uid: string,
     status: string,
-    currentProject?: Project
+    currentProject?: Project,
+    pastProjects: Project[]
 }
 
 export default Student

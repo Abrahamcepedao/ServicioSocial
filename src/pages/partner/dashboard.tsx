@@ -7,26 +7,24 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react'
 
 //Material UI
-import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
-
-//CSS
-import styles from '@/styles/Home.module.css'
-
-//Assets
-import Logo from '../../public/logo.png'
+import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
+import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+import PollRoundedIcon from '@mui/icons-material/PollRounded';
+import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
+import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded';
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 
 //Components
 import SideBar from '@/components/global/Sidebar';
+import LineChart from '@/components/charts/LineChart'
+import ResponsiveRadialBar from "@/components/charts/ResponsiveRadialBar"
 
 //Context
 import { useAuth } from '@/context/AuthContext';
+import { IconButton } from '@mui/material';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -56,6 +54,70 @@ export default function Dashboard() {
       severity: "error"
     })
 
+    //useState
+    const [state, setState] = useState({
+        data: [
+            {
+                "id": 'Alumnos',
+                "color": "hsl(186, 69%, 50%)",
+                "data": [
+                    { x: '2022-01-01', y: 250 },
+                    { x: '2022-02-01', y: 350 },
+                    { x: '2022-03-01', y: 270 },
+                    { x: '2022-04-01', y: 390 },
+                    { x: '2022-05-01', y: 400 },
+                    { x: '2022-06-01', y: 350 },
+                    { x: '2022-07-01', y: 420 },
+                    { x: '2022-08-01', y: 450 },
+                    { x: '2022-09-01', y: 350 },
+                    { x: '2022-10-01', y: 550 },
+                    { x: '2022-11-01', y: 600 },
+                    { x: '2022-12-01', y: 570 },
+                ],
+            },
+        ],
+        data2: [
+          {
+            "id": "Presencial",
+            "data": [
+              {
+                "x": "Presencial",
+                "y": 40
+              }
+            ]
+          },
+          {
+            "id": "Remoto",
+            "data": [
+              {
+                "x": "Remoto",
+                "y": 60
+              }
+            ]
+          }
+        ],
+        data3: [
+          {
+            "id": "Presencial",
+            "data": [
+              {
+                "x": "Presencial",
+                "y": 70
+              }
+            ]
+          },
+          {
+            "id": "Remoto",
+            "data": [
+              {
+                "x": "Remoto",
+                "y": 30
+              }
+            ]
+          }
+        ]
+    })
+
 
     return (
       <>
@@ -67,8 +129,126 @@ export default function Dashboard() {
         </Head>
         <main className=''>
             <SideBar/>
-            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-primary lg:left-44 relative p-10'>
-              <h1>Dashboard - partner</h1>
+            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-20'>
+              
+              {/* Facts */}
+              <div className='grid grid-cols-3 gap-5 mb-10'>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Estudiantes</p>
+                      <p className='fact__number'>12,000</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash1'>
+                      <SchoolRoundedIcon className='text-dash1'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Inscritos</p>
+                      <p className='fact__number'>10,000</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash2'>
+                      <GroupsRoundedIcon className='text-dash2'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Socios formadores</p>
+                      <p className='fact__number'>250</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash3'>
+                      <BusinessRoundedIcon className='text-dash3'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Proyectos</p>
+                      <p className='fact__number'>600</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash4'>
+                      <PollRoundedIcon className='text-dash4'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Estudiantes</p>
+                      <p className='fact__number'>12,000</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash5'>
+                      <GroupsRoundedIcon className='text-dash5'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Administradores</p>
+                      <p className='fact__number'>7</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash6'>
+                      <AdminPanelSettingsRoundedIcon className='text-dash6'/>
+                  </div>
+                </div>
+              </div>
+
+              {/* lower */}
+              <div className='flex justify-between items-center'>
+                {/* time chart */}
+                <div className='rounded-xl bg-lightAlt dark:bg-darkAlt flex-auto max-w-[80%] mr-10'>
+                    {/* header */}
+                    <div className='mb-10 p-10 flex justify-between items-center'>
+                      <p className='subtitle'>Número de proyectos</p>
+                      <div>
+                        <IconButton>
+                          <MoreHorizRoundedIcon className='text-black dark:text-white'/>
+                        </IconButton>
+                      </div>
+                    </div>
+
+                    {/* chart */}
+                    <div className="h-96 w-full">
+                        <LineChart data={state.data}/>
+                    </div>
+                </div>
+
+                {/* lower right */}
+                <div className='w-full h-full max-w-[20%]'>
+                  {/* lower right upper */}
+                  <div className='rounded-xl bg-lightAlt dark:bg-darkAlt p-5 mb-5'>
+                    <p className='subtitle'>Formato de proyectos</p>
+                    <div className="h-36 w-full">
+                        <ResponsiveRadialBar data={state.data2}/>
+                    </div>
+                    <div className='flex justify-between items-center'>
+                      <div className='w-3 h-3 rounded-xl bg-chart1 mr-3'></div>
+                      <p className='flex-1 opacity-60'>Presencial</p>
+                      <p className='opacity-8'>40%</p>
+                    </div>
+                    <div className='flex justify-between items-center'>
+                      <div className='w-3 h-3 rounded-xl bg-chart2 mr-3'></div>
+                      <p className='flex-1 opacity-60'>Remoto</p>
+                      <p className='opacity-80'>60%</p>
+                    </div>
+                  </div>
+
+
+                  {/* lower right upper */}
+                  <div className='rounded-xl bg-lightAlt dark:bg-darkAlt p-5'>
+                    <p className='subtitle'>Formato de inscripción</p>
+                    <div className="h-36 w-full">
+                        <ResponsiveRadialBar data={state.data3}/>
+                    </div>
+                    <div className='flex justify-between items-center'>
+                      <div className='w-3 h-3 rounded-xl bg-chart1 mr-3'></div>
+                      <p className='flex-1 opacity-60'>IRIS</p>
+                      <p className='opacity-8'>70%</p>
+                    </div>
+                    <div className='flex justify-between items-center'>
+                      <div className='w-3 h-3 rounded-xl bg-chart2 mr-3'></div>
+                      <p className='flex-1 opacity-60'>Entrevista</p>
+                      <p className='opacity-80'>30%</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
         </main>
       </>

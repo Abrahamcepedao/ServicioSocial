@@ -10,22 +10,21 @@ import React, { useState } from 'react'
 //Material UI
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
 
 //Material UI - icons
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
-
-//CSS
-import styles from '@/styles/Home.module.css'
+import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 
 //Assets
 import Logo from '../../public/logo.png'
 import LogoW from '../../public/logo_w.png'
-
-//Components
-import ThemeToggler from '@/components/global/ThemeToggler';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
@@ -50,6 +49,8 @@ export default function SignUp() {
       mail: "",
       name: "",
       phone: "",
+      matricula: "",
+      key: "",
       password: "",
       confirmPassword: "",
       type: "admin" //admin, user, socio
@@ -71,6 +72,7 @@ export default function SignUp() {
       setUtils({...utils, open: false});
     };
 
+    /* handle input change */
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
       setFormData({
         ...formData,
@@ -122,6 +124,21 @@ export default function SignUp() {
               </div>
               <div className='flex flex-col items-center justify-center flex-1'>
                 <form onSubmit={(e) => {handleSignUp(e)}} className="flex-1 max-h-96" autoComplete='off'>
+                    {/* user type */}
+                    <FormControl>
+                      <label id="type" className='text-black dark:text-white input__label'>Selecciona el tipo de usuario</label>
+                      <RadioGroup
+                        row
+                        aria-labelledby="type"
+                        name="type"
+                        value={formData.type}
+                        onChange={handleInputChange}
+                      >
+                        <FormControlLabel value="student" control={<Radio />} label="Alumno" />
+                        <FormControlLabel value="partner" control={<Radio />} label="Socio" />
+                        <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                      </RadioGroup>
+                    </FormControl>
                     <div className='grid grid-cols-2 gap-4 mb-8'>
                         <div className='input__container '>
                           <EmailRoundedIcon/>
@@ -140,6 +157,28 @@ export default function SignUp() {
                             className="input"
                           />
                         </div>
+                        {formData.type === "student" && (
+                          <div className='input__container '>
+                            <PersonRoundedIcon/>
+                            <input 
+                              name='matricula' placeholder='Ingrese su matrícula'
+                              autoComplete='off'
+                              value={formData.matricula} onChange={(e) => {handleInputChange(e)}}
+                              className="input"
+                            />
+                          </div>
+                        )}
+                        {formData.type === "partner" && (
+                          <div className='input__container '>
+                            <KeyRoundedIcon/>
+                            <input 
+                              name='key' placeholder='Ingrese su clave'
+                              autoComplete='off'
+                              value={formData.key} onChange={(e) => {handleInputChange(e)}}
+                              className="input"
+                            />
+                          </div>
+                        )}
                         <div className='input__container '>
                           <LocalPhoneRoundedIcon/>
                           <input 

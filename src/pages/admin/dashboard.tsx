@@ -95,6 +95,26 @@ export default function Dashboard() {
               }
             ]
           }
+        ],
+        data3: [
+          {
+            "id": "Presencial",
+            "data": [
+              {
+                "x": "Presencial",
+                "y": 70
+              }
+            ]
+          },
+          {
+            "id": "Remoto",
+            "data": [
+              {
+                "x": "Remoto",
+                "y": 30
+              }
+            ]
+          }
         ]
     })
 
@@ -216,17 +236,17 @@ export default function Dashboard() {
                   <div className='rounded-xl bg-lightAlt dark:bg-darkAlt p-5'>
                     <p className='subtitle'>Formato de inscripción</p>
                     <div className="h-36 w-full">
-                        <ResponsiveRadialBar data={state.data2}/>
+                        <ResponsiveRadialBar data={state.data3}/>
                     </div>
                     <div className='flex justify-between items-center'>
                       <div className='w-3 h-3 rounded-xl bg-chart1 mr-3'></div>
-                      <p className='flex-1 opacity-60'>Presencial</p>
-                      <p className='opacity-8'>40%</p>
+                      <p className='flex-1 opacity-60'>IRIS</p>
+                      <p className='opacity-8'>70%</p>
                     </div>
                     <div className='flex justify-between items-center'>
                       <div className='w-3 h-3 rounded-xl bg-chart2 mr-3'></div>
-                      <p className='flex-1 opacity-60'>Remoto</p>
-                      <p className='opacity-80'>60%</p>
+                      <p className='flex-1 opacity-60'>Entrevista</p>
+                      <p className='opacity-80'>30%</p>
                     </div>
                   </div>
                 </div>

@@ -182,7 +182,7 @@ export default function Oferta() {
 
                 {/* title */}
                 <div className='flex justify-between items-center mb-10'>
-                  <h1 className='title'>Oferta</h1>
+                  <h1 className='title text-black dark:text-white'>Oferta</h1>
                   <div>
                     <IconButton onClick={() => {setUtils({...utils, collapse: !utils.collapse})}}>
                       {utils.collapse ? (

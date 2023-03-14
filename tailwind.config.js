@@ -28,8 +28,8 @@ module.exports = {
       'chart2': "#2078B3",
     },
     colors: {
-      'black': '#1b1c1d',
-      'white': '#f9fdff',
+      'black': '#393d41',
+      'white': '#deebf2',
       'primary': '#256EFF',
       'secondary': '#d72638',
       'terciary': '#6c969d',

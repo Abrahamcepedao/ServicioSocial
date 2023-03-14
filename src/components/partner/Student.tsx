@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 //Material UI
-import {Collapse} from '@mui/material';
+import { Collapse } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
@@ -112,7 +112,6 @@ const Student = ({student}:AppProps) => {
                         <PsychologyRoundedIcon/>
                         <p>{student.promedio}</p>
                     </div>
-                    {/* <button onClick={() => {handleViewStudents()}} className='button__sm bg-primary text-white'>Ver alumnos</button> */}
                 </div>
 
                 {/* collapse */}

@@ -43,6 +43,19 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         localStorage.setItem("ss__favs", JSON.stringify(data))
     }
 
+    const updateFavs = (project:Project) => {
+        console.log(project)
+        let data = [...favs]
+        let index = data.findIndex((el:Project) => el.uid === project.uid)
+        if(index !== -1) {
+            //let students = project.students
+            data[index].students = project.students
+            data[index].occupied = project.occupied
+        }
+        console.log(data)
+        setFavs(data)
+    }
+
     const deleteFav = (uid:string) => {
         let data = [...favs]
         if(data.length !== 0) {
@@ -62,6 +75,19 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
     /* add project */
     const addProject = async (project:Project) => {
         return await addProjectFirebase(project)
+    }
+
+    /* update projects */
+    const updateProjects = async (project:Project) => {
+        console.log(project)
+        let data = [...projects]
+        let index = data.findIndex((el:Project) => el.uid === project.uid)
+        if(index !== -1) {
+            data[index].students = project.students
+            data[index].occupied = project.occupied
+        }
+        console.log(data)
+        setProjects(data)
     }
 
     /* update project info */
@@ -101,12 +127,22 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
 
     /* register student */
     const registerStudent = async (project: Project, student:Student) => {
-        return await registerStudentFirebase(project, student)
+        const res = await registerStudentFirebase(project, student)
+        if(res !== false) {
+            updateProjects(res)
+            updateFavs(res)
+        } 
+        return res
     }
 
     /* unregister student */
     const unregisterStudent = async(project: Project, student: Student) => {
-        return await unregisterStudentFirebase(project, student)
+        const res = await unregisterStudentFirebase(project, student)
+        if(res !== false) {
+            updateProjects(res)
+            updateFavs(res)
+        } 
+        return res
     }
 
 

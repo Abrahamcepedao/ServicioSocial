@@ -161,14 +161,14 @@ const Project = ({project, deleteFromFav}:AppProps) => {
 
     return (
         <div>
-            <div className="bg-darkAlt  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">
+            <div className="bg-lightAlt dark:bg-darkAlt  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>
                     <div>
-                        <h3 className='subtitle'>{project.name}</h3>
+                        <h3 className='subtitle text-black dark:text-white'>{project.name}</h3>
                     </div>
                     <div className='flex justify-end items-center'>
-                        <p className='font-bold mr-4'>{"0/" + project.availability}</p>
+                        <p className='font-bold mr-4 text-black dark:text-white'>{project.occupied + "/" + project.availability}</p>
 
                         {/* action buttons */}
                         {user.type === "student" && (

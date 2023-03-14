@@ -3,7 +3,11 @@ import {
     onAuthStateChanged, 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
-    signOut } 
+    signOut,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    updatePassword
+ } 
 from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { auth } from '../database/firebase'
@@ -182,7 +186,28 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         return false
     }
 
-    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, createAdmin, signupStudent, signupPartner, signupAdmin, getUsers, users}}>
+    const reauthenticate = async (currentPassword:string) => {
+        var currentUser = auth.currentUser;
+        var cred = EmailAuthProvider.credential(currentUser.email, currentPassword);
+        return await reauthenticateWithCredential(currentUser, cred);
+    }
+
+    const changePassword = async (currentPassword:string, newPassword:string) => {
+        return await reauthenticate(currentPassword).then(() => {
+            var currentUser = auth.currentUser;
+            updatePassword(currentUser, newPassword).then(() => {
+                return true
+            }).catch((error) => { 
+                console.error(error)
+                return "Error al actualizar la contraseña."
+            ; });
+        }).catch((error) => { 
+            console.error(error); 
+            return "Contraseña actual incorrecta."
+        });
+    }
+
+    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, createAdmin, signupStudent, signupPartner, signupAdmin, getUsers, users, changePassword}}>
         {loading ? null : children}
     </AuthContext.Provider>
 }
