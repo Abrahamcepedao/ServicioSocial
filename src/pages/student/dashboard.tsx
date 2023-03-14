@@ -7,26 +7,23 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react'
 
 //Material UI
-import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { IconButton } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 //Material UI - icons
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
-
-//CSS
-import styles from '@/styles/Home.module.css'
-
-//Assets
-import Logo from '../../public/logo.png'
+import PersonPinTwoToneIcon from '@mui/icons-material/PersonPinTwoTone';
+import LockTwoToneIcon from '@mui/icons-material/LockTwoTone';
+import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 
 //Components
 import SideBar from '@/components/global/Sidebar';
-
-//Context
-import { useAuth } from '@/context/AuthContext';
+import Profile from '@/components/student/Profile';
+import Projects from '@/components/student/Projects';
+import UpdatePassword from '@/components/auth/UpdatePassword';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -36,26 +33,41 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Dashboard() {
-    //context
-    const { user, login } = useAuth()
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
 
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+export default function Dashboard() {
     //router
     const router = useRouter()
 
-    //useState - formData
-    const [formData, setFormData] = useState({
-      maiil: "",
-      passsword: "",
-    })
+    const [value, setValue] = useState(0);
 
-    //useState - alert open
-    const [utils, setUtils] = useState({
-      open: false,
-      message: "",
-      severity: "error"
-    })
-
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+      setValue(newValue);
+    };
 
     return (
       <>
@@ -67,8 +79,37 @@ export default function Dashboard() {
         </Head>
         <main className=''>
             <SideBar/>
-            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-10'>
-              <h1>Dashboard</h1>
+            <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-20'>
+              <div className='mb-4'>
+                <h2 className='subtitle'>Tu perfil</h2>
+              </div>
+
+              <div className='rounded-xl bg-lightAlt dark:bg-darkAlt p-5'>
+                {/* tabs */}
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="icon position tabs example"
+                  textColor="primary"
+                  indicatorColor="primary"
+                  
+                >
+                  <Tab className='text-black dark:text-white opacity-70 hover:opacity-100' style={{opacity: value === 0 ? 1 : 0.7}} icon={<PersonPinTwoToneIcon />} iconPosition="start" label="Perfil" />
+                  <Tab className='text-black dark:text-white opacity-70 hover:opacity-100' style={{opacity: value === 1 ? 1 : 0.7}} icon={<AccountTreeTwoToneIcon />} iconPosition="start" label="Proyectos" />
+                  <Tab className='text-black dark:text-white opacity-70 hover:opacity-100' style={{opacity: value === 2 ? 1 : 0.7}} icon={<LockTwoToneIcon />} iconPosition="start" label="Cambiar Contraseña" />
+                </Tabs>
+
+                {/* tab panel */}
+                <TabPanel value={value} index={0}>
+                  <Profile/>
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                  <Projects/>
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                  <UpdatePassword/>
+                </TabPanel>
+              </div>
             </div>
         </main>
       </>

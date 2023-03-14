@@ -14,19 +14,11 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
-
-//CSS
-import styles from '@/styles/Home.module.css'
 
 //Assets
 import Logo from '../../public/logo.png'
 import LogoW from '../../public/logo_w.png'
-
-//Components
-import ThemeToggler from '@/components/global/ThemeToggler';
 
 //Context
 import { useAuth } from '@/context/AuthContext';
@@ -53,6 +45,11 @@ export default function Login() {
     const [formData, setFormData] = useState({
       maiil: "",
       passsword: "",
+      confirmPassword: "",
+      name: "",
+      matricula: "",
+      key: "",
+      type: "student"
     })
 
     //useState - alert open
@@ -120,6 +117,7 @@ export default function Login() {
       }
     }
 
+
     return (
       <>
         <Head>
@@ -130,7 +128,7 @@ export default function Login() {
         </Head>
         <main className='min-h-screen'>
           <div className='flex flex-col items-center justify-between min-h-screen p-20'>
-              <div className='mb-20'>
+              <div className=''>
                 <Image src={theme === "light" ? Logo : LogoW} width={200} height={140} alt="Servicio Social"/>
                 {/* <ThemeToggler /> */}
               </div>
@@ -146,7 +144,6 @@ export default function Login() {
                             className="input"
                           />
                         </div>
-                        
                         <div className='input__container '>
                           <LockRoundedIcon/>
                           <input 

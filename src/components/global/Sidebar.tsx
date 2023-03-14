@@ -57,7 +57,7 @@ const SideBar = () => {
 
                 {/* tabs */}
                 <div className='p-5 w-full'>
-                    <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href="/admin/dashboard" style={{background: router.pathname.includes('/dashboard') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/dashboard') ? 1 : 0.5}}>
+                    <Link className="flex justify-start items-center p-2 rounded-3xl mb-2" href={`/${user.type}/dashboard`} style={{background: router.pathname.includes('/dashboard') ? theme === "dark" ? 'rgba(255,255,255,0.05)' : 'rgba(25,25,25,0.05)' : 'none', opacity: router.pathname.includes('/dashboard') ? 1 : 0.5}}>
                         {router.pathname.includes('/dashboard') ? (
                             <AnalyticsRoundedIcon className="sidebar__icon"/>
                         ) : (

@@ -112,7 +112,6 @@ const Student = ({student}:AppProps) => {
                         <PsychologyRoundedIcon/>
                         <p>{student.promedio}</p>
                     </div>
-                    {/* <button onClick={() => {handleViewStudents()}} className='button__sm bg-primary text-white'>Ver alumnos</button> */}
                 </div>
 
                 {/* collapse */}
