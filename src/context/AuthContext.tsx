@@ -172,7 +172,7 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
             name,
             type: "admin"
         }
-
+        
         return await addAdmin(temp)
     }
 

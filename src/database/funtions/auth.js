@@ -39,7 +39,7 @@ const addStudent = async (user) => {
 
         console.log(payload)
         await setDoc(docRef, payload)
-        return true
+        return payload
     } catch(error) {
         console.log(error)
         return false
@@ -166,12 +166,13 @@ const addAdmin = async (user) => {
             mail: user.mail,
             phone: user.phone,
             name: user.name,
-            signedUp: false
+            signedUp: false,
+            type: "admin"
         }
 
         console.log(payload)
         await setDoc(docRef, payload)
-        return true
+        return payload
     } catch(error) {
         console.log(error)
         return false
@@ -191,7 +192,8 @@ const signedUpAdmin = async (mail) => {
             mail: temp.mail,
             phone: temp.phone,
             name: temp.name,
-            signedUp: true
+            signedUp: true,
+            type: "admin"
         }
         await setDoc(docRef, payload)
         return payload

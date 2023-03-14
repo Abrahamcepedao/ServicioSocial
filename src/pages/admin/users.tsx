@@ -30,12 +30,7 @@ import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import PsychologyRoundedIcon from '@mui/icons-material/PsychologyRounded';
 import { AttachFileRounded } from '@mui/icons-material';
-
-//CSS
-import styles from '@/styles/Home.module.css'
-
-//Assets
-import Logo from '../../public/logo.png'
+import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded';
 
 //Components
 import SideBar from '@/components/global/Sidebar';
@@ -65,7 +60,8 @@ export default function Users() {
     const [state, setState] = useState({
       users: [],
       usersList: [],
-      userType: "all"
+      userType: "all",
+      filter: ""
     })
 
     //useState - formData
@@ -115,6 +111,33 @@ export default function Users() {
 
       setUtils({...utils, open: false});
     };
+
+
+    /* handle filter change */
+    const handleFilterChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+      let data = []
+      let val = e.target.value
+      if(val !== "") {
+        state.users.forEach((item:any) => {
+          if(item.name.toLocaleLowerCase().includes(val.toLocaleLowerCase())){
+            data.push(item)
+          } else if(item.mail.toLocaleLowerCase().includes(val.toLocaleLowerCase())) {
+            data.push(item)
+          } else if(item.company !== undefined) {
+            if(item.company.toLocaleLowerCase().includes(val.toLocaleLowerCase())) {
+              data.push(item)
+            }
+          }
+        })
+        setState({
+          ...state,
+          usersList: data,
+          filter: val
+        })
+      } else {
+        handleUserTypeClick(state.userType)
+      }
+    }
 
     /* handle fecth users */
     const fetchUsers = async () => {
@@ -195,6 +218,29 @@ export default function Users() {
       return true
     } 
 
+    const resetForm = () => {
+      setFormData({
+        maiil: "",
+        name: "",
+        phone: "",
+        type: "student"
+      })
+      setStudent({
+        matricula: "",
+        mail: "",
+        carrera: "",
+        semestre: "",
+        horas: "",
+        promedio: ""
+      })
+      setPartner({
+        company: "",
+        key: "",
+        file: "",
+        fileName: ""
+      })
+    }
+
     /* handle create user */
     const handleCreateUser = async (e:React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
@@ -211,7 +257,7 @@ export default function Users() {
               Number(student.horas),
               Number(student.promedio)
             )
-            if(res) {
+            if(res !== false) {
               setUtils({
                 ...utils,
                 open: true,
@@ -219,6 +265,14 @@ export default function Users() {
                 message: "Se registró el alumno exitosamente",
                 collapse: false
               })
+              let data = [...state.users]
+              data.push(res)
+              setState({
+                ...state,
+                users: data,
+                usersList: data
+              })
+              resetForm()
             } else {
               setUtils({
                 ...utils,
@@ -247,6 +301,8 @@ export default function Users() {
                 message: "Se registró la organización exitosamente",
                 collapse: false,
               })
+              await fetchUsers()
+              resetForm()
             } else {
               setUtils({
                 ...utils,
@@ -257,13 +313,13 @@ export default function Users() {
               })
             }
         } else {
-          const res = await createAdmin(
+            const res = await createAdmin(
               formData.maiil,
               formData.phone,
               formData.name,
             )
 
-            if(res) {
+            if(res !== false) {
               setUtils({
                 ...utils,
                 open: true,
@@ -271,6 +327,14 @@ export default function Users() {
                 message: "Se registró el usuario administrador exitosamente",
                 collapse: false,
               })
+              let data = [...state.users]
+              data.push(res)
+              setState({
+                ...state,
+                users: data,
+                usersList: data
+              })
+              resetForm()
             } else {
               setUtils({
                 ...utils,
@@ -282,7 +346,7 @@ export default function Users() {
             }
         }
 
-        fetchUsers()
+        
       }
     }
 
@@ -293,7 +357,8 @@ export default function Users() {
       setState({
         ...state,
         userType,
-        usersList: userType !== "all" ? temp : state.users
+        usersList: userType !== "all" ? temp : state.users,
+        filter: ""
       })
       
     }
@@ -316,7 +381,7 @@ export default function Users() {
                 <div className='flex justify-end items-center'>
                   <div className='filter__container'>
                     <SearchRoundedIcon/>
-                    <input placeholder='Busca un usuario' className='filter__input'/>
+                    <input value={state.filter} onChange={(e) => {handleFilterChange(e)}} placeholder='Busca un usuario' className='filter__input'/>
                   </div>
 
                   {utils.collapse ? (
@@ -517,23 +582,32 @@ export default function Users() {
               </Collapse>
 
               {/* filter users */}
-              <div className='max-w-5xl m-auto mt-10 flex justify-start items-start'>
-                <div 
-                  onClick={() => {handleUserTypeClick("all")}}
-                  className='rounded-xl border-2 border-all pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                  style={{background: state.userType === "all" ? "#968d87" : "none"}}>Todos</div>
-                <div 
-                  onClick={() => {handleUserTypeClick("student")}}
-                  className='rounded-xl border-2 border-student pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                  style={{background: state.userType === "student" ? "#d6192c" : "none"}}>Alumnos</div>
-                <div 
-                  onClick={() => {handleUserTypeClick("partner")}}
-                  className='rounded-xl border-2 border-partner pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                  style={{background: state.userType === "partner" ? "#17c4be" : "none"}}>Socios</div>
-                <div 
-                  onClick={() => {handleUserTypeClick("admin")}}
-                  className='rounded-xl border-2 border-admin pl-4 pr-4 pt-2 pb-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                  style={{background: state.userType === "admin" ? "#1973c6" : "none"}}>Admins</div>
+              <div className='max-w-5xl m-auto mt-10 flex justify-between items-center'>
+                <div className='flex justify-start items-start flex-1'>
+                  <div 
+                    onClick={() => {handleUserTypeClick("all")}}
+                    className='rounded-xl border-2 border-all pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "all" ? "#968d87" : "none"}}>Todos</div>
+                  <div 
+                    onClick={() => {handleUserTypeClick("student")}}
+                    className='rounded-xl border-2 border-student pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "student" ? "#d6192c" : "none"}}>Alumnos</div>
+                  <div 
+                    onClick={() => {handleUserTypeClick("partner")}}
+                    className='rounded-xl border-2 border-partner pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "partner" ? "#17c4be" : "none"}}>Socios</div>
+                  <div 
+                    onClick={() => {handleUserTypeClick("admin")}}
+                    className='rounded-xl border-2 border-admin pl-4 pr-4 pt-2 pb-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "admin" ? "#1973c6" : "none"}}>Admins</div>
+                </div>
+                <div>
+                    <Tooltip title="Filtrar" placement='top'>
+                      <IconButton>
+                        <FilterListRoundedIcon className='text-black dark:text-white transition-transform duration-1000 hover:scale-110'/>
+                      </IconButton>
+                    </Tooltip>
+                </div>
               </div>
               
               {/* list of users */}
