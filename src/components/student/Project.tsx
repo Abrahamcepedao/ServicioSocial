@@ -41,8 +41,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 const Project = ({project, deleteFromFav}:AppProps) => {
     //context
-    const { user } = useAuth()
-    const { favs, addFav, deleteFav, registerStudent, unregisterStudent } = useProjects()
+    const { user, setUserCurrentProject, setUserAppliedProjects } = useAuth()
+    const { favs, addFav, deleteFav, registerStudent, unregisterStudent, deleteUserCurrentProjec, deleteUserAppliedProject } = useProjects()
 
     //useState - open
     const [state, setState] = useState({
@@ -62,6 +62,7 @@ const Project = ({project, deleteFromFav}:AppProps) => {
 
     //useEffect
     useEffect(() => {
+        console.log(project)
         setup()
     },[project])
 
@@ -119,20 +120,42 @@ const Project = ({project, deleteFromFav}:AppProps) => {
     const handleRegisterClick = async() => {
         const res = await registerStudent(project, user)
         if(res) {
-            setUtils({
-                ...utils,
-                open: true,
-                severity: 'success',
-                message: "¡Te registraste exitosamente!"
-            })
+            if(project.inscripcion === "Inscripción por IRIS") {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'success',
+                    message: "¡Te registraste exitosamente!"
+                })
+                setUserCurrentProject(project)
+            } else {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'success',
+                    message: "¡Solicitaste tu registro exitosamente!"
+                })
+                setUserAppliedProjects(project)
+            }
+            
             setState({...state, isRegistered: true})
         } else {
-            setUtils({
-                ...utils,
-                open: true,
-                severity: 'error',
-                message: "Ocurrió un error al registrar la experiencia"
-            })
+            
+            if(project.inscripcion === "Inscripción por IRIS") {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'error',
+                    message: "Ocurrió un error al registrar la experiencia"
+                })
+            } else {
+               setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'error',
+                    message: "Ocurrió un error al solicitar tu registro"
+                })
+            }
             setState({...state, isRegistered: false})
         }
     }
@@ -141,20 +164,42 @@ const Project = ({project, deleteFromFav}:AppProps) => {
     const handleUnregisterClick = async() => {
         const res = await unregisterStudent(project, user)
         if(res) {
-            setUtils({
+            
+            if(project.inscripcion === "Inscripción por IRIS") {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'success',
+                    message: "¡Se elimino el registro exitosamente!"
+                })
+                deleteUserCurrentProjec()
+            } else {
+                setUtils({
                 ...utils,
-                open: true,
-                severity: 'success',
-                message: "¡Se elimino el registro exitosamente!"
-            })
+                    open: true,
+                    severity: 'success',
+                    message: "¡Se elimino tu solicitud exitosamente!"
+                })
+                deleteUserAppliedProject(project.uid)
+            }
             setState({...state, isRegistered: false})
         } else {
-            setUtils({
-                ...utils,
-                open: true,
-                severity: 'error',
-                message: "Ocurrió un error al eliminar la experiencia"
-            })
+            if(project.inscripcion === "Inscripción por IRIS") {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'error',
+                    message: "Ocurrió un error al eliminar la experiencia"
+                })
+            } else {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'error',
+                    message: "Ocurrió un error al eliminar tu solicitud"
+                })
+            }
+            
             setState({...state, isRegistered: true})
         }
     }
@@ -217,9 +262,9 @@ const Project = ({project, deleteFromFav}:AppProps) => {
                     {user.type === "student" && (
                         <>
                             {state.isRegistered ? (
-                                <button onClick={() => {handleUnregisterClick()}} className='button__sm bg-secondary text-white'>Eliminar registro</button>
+                                <button onClick={() => {handleUnregisterClick()}} className='button__sm bg-secondary text-white'>{project.inscripcion === "Inscripción por IRIS" ? "Eliminar registro" : "Eliminar solicitud"}</button>
                             ) : (
-                                <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white'>Registrar experiencia</button>
+                                <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white'>{project.inscripcion === "Inscripción por IRIS" ? "Registrar experiencia" : "Solicitar experiencia"}</button>
                             )}
                         </>
                     )}

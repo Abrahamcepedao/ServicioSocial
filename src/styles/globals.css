@@ -13,6 +13,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 
@@ -35,6 +36,10 @@ body {
 .subtitle {
   font-weight: bold;
   font-size: 20px;
+}
+.subtitle2 {
+  font-weight: bold;
+  font-size: 18px;
 }
 
 /* inputs */
@@ -116,7 +121,7 @@ body {
   max-width: 140px;
   border-radius: 10px;
   transition: transform 450ms;
-  padding: 4px 4px;
+  padding: 6px 10px;
 }
 
 /* icons */

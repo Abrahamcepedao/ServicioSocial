@@ -32,6 +32,7 @@ const addStudent = async (user) => {
             name: user.name,
             carrera: user.carrera,
             semestre: user.semestre,
+            promedio: user.promedio,
             horas: user.horas,
             type: user.type,
             signedUp: false

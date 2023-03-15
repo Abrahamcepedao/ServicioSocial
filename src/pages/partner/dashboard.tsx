@@ -11,11 +11,13 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import PollRoundedIcon from '@mui/icons-material/PollRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
+import ThumbUpRoundedIcon from '@mui/icons-material/ThumbUpRounded';
+import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
+import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
 
 //Components
 import SideBar from '@/components/global/Sidebar';
@@ -135,8 +137,8 @@ export default function Dashboard() {
               <div className='grid grid-cols-3 gap-5 mb-10'>
                 <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
                   <div>
-                      <p className='fact__label'>Estudiantes</p>
-                      <p className='fact__number'>12,000</p>
+                      <p className='fact__label'>Inscritos</p>
+                      <p className='fact__number'>178</p>
                   </div>
                   <div className='fact__icon__container bg-dash1'>
                       <SchoolRoundedIcon className='text-dash1'/>
@@ -144,8 +146,8 @@ export default function Dashboard() {
                 </div>
                 <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
                   <div>
-                      <p className='fact__label'>Inscritos</p>
-                      <p className='fact__number'>10,000</p>
+                      <p className='fact__label'>Solicitantes</p>
+                      <p className='fact__number'>32</p>
                   </div>
                   <div className='fact__icon__container bg-dash2'>
                       <GroupsRoundedIcon className='text-dash2'/>
@@ -153,38 +155,38 @@ export default function Dashboard() {
                 </div>
                 <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
                   <div>
-                      <p className='fact__label'>Socios formadores</p>
-                      <p className='fact__number'>250</p>
-                  </div>
-                  <div className='fact__icon__container bg-dash3'>
-                      <BusinessRoundedIcon className='text-dash3'/>
-                  </div>
-                </div>
-                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
-                  <div>
                       <p className='fact__label'>Proyectos</p>
-                      <p className='fact__number'>600</p>
-                  </div>
-                  <div className='fact__icon__container bg-dash4'>
-                      <PollRoundedIcon className='text-dash4'/>
-                  </div>
-                </div>
-                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
-                  <div>
-                      <p className='fact__label'>Estudiantes</p>
-                      <p className='fact__number'>12,000</p>
-                  </div>
-                  <div className='fact__icon__container bg-dash5'>
-                      <GroupsRoundedIcon className='text-dash5'/>
-                  </div>
-                </div>
-                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
-                  <div>
-                      <p className='fact__label'>Administradores</p>
                       <p className='fact__number'>7</p>
                   </div>
+                  <div className='fact__icon__container bg-dash3'>
+                      <PollRoundedIcon className='text-dash3'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Calificación general</p>
+                      <p className='fact__number'>4.8</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash4'>
+                      <ThumbUpRoundedIcon className='text-dash4'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Horas acreditadas</p>
+                      <p className='fact__number'>6,728</p>
+                  </div>
+                  <div className='fact__icon__container bg-dash5'>
+                      <WatchLaterRoundedIcon className='text-dash5'/>
+                  </div>
+                </div>
+                <div className='fact__item bg-lightAlt dark:bg-darkAlt flex justify-between items-center'>
+                  <div>
+                      <p className='fact__label'>Proyectos completados</p>
+                      <p className='fact__number'>19</p>
+                  </div>
                   <div className='fact__icon__container bg-dash6'>
-                      <AdminPanelSettingsRoundedIcon className='text-dash6'/>
+                      <AccountTreeRoundedIcon className='text-dash6'/>
                   </div>
                 </div>
               </div>

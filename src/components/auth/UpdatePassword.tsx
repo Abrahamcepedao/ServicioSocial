@@ -110,7 +110,7 @@ const UpdatePassword = () => {
 
 
     return (
-        <div>
+        <div className='rounded-xl p-4 border border-primary'>
             <h2 className='subtitle mb-4 text-black dark:text-white'>Cambia tu contraseña</h2>
 
             {/* info message */}

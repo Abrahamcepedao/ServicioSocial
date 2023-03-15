@@ -12,6 +12,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 //Material UI - icons
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import ComputerRoundedIcon from '@mui/icons-material/ComputerRounded';
 import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
@@ -54,11 +55,11 @@ const Profile = () => {
     return (
         <div>
             <div className="text-sm pt-4 pb-4 text-left rounded-lg mb-4">
-                <div className='grid grid-rows-2 xl:grid-rows-1 xl:grid-cols-2 gap-3 mb-4'>
+                <div className='grid grid-rows-2 xl:grid-rows-1 xl:grid-cols-2 gap-3 mb-4 rounded-xl p-4 border border-primary'>
                     {user!== null && (
-                        <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+                        <div className='grid grid-cols-2 md:grid-cols-4 gap-3 text-center'>
                             <div className='opacity-50'>
-                                <BadgeIcon/>
+                                <PersonRoundedIcon/>
                                 <p>{user.name}</p>
                             </div>
                             <div className='opacity-50'>
@@ -76,7 +77,7 @@ const Profile = () => {
                         </div>
                     )}
                     {user!== null && (
-                        <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+                        <div className='grid grid-cols-2 md:grid-cols-4 gap-1 text-center'>
                             <div className='opacity-50'>
                                 <SchoolRoundedIcon/>
                                 <p>{user.carrera}</p>

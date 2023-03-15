@@ -31,10 +31,12 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 type AppProps = {
     student: Student,
-    //deleteProject: (uid:string) => void
+    deleteStudent?: (item:Student) => void,
+    acceptStudent?: (item:Student) => void,
+    projectType: string,
 };
 
-const Student = ({student}:AppProps) => {
+const Student = ({student, deleteStudent, acceptStudent, projectType}:AppProps) => {
     //context
     //const { setProject } = useProjects()
 
@@ -71,19 +73,29 @@ const Student = ({student}:AppProps) => {
 
     return (
         <div>
-            <div className="bg-darkAlt  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">    
+            <div className="bg-lightAlt dark:bg-darkAlt  text-sm pt-4 pb-4 text-left rounded-lg mb-4 p-4">    
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>
                     <div>
-                        <h3 className='subtitle'>{student.name}</h3>
+                        <h3 className='subtitle2 text-black dark:text-white'>{student.name}</h3>
                     </div>
                     <div>
-                        <div className='bg-secondary pt-1 pb-1 pl-4 pr-4 rounded-xl'>{student.status}</div>
+                        {projectType === "IRIS" && (
+                            <button onClick={() => {deleteStudent(student)}} className='button__sm bg-secondary text-white'>Eliminar registro</button>
+                        )}
+                        {projectType !== "IRIS" && (
+                            <div className='flex justify-end items-center'>
+                                <button onClick={() => {deleteStudent(student)}} className='button__sm bg-secondary text-white mr-4'>{student.status === "AP" ? "Rechazar" : "Eliminar registroo"}</button>
+                                {student.status === "AP" && (
+                                    <button onClick={() => {acceptStudent(student)}} className='button__sm bg-primary text-white'>Aceptar</button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>   
 
                 {/* lower */}         
-                <div className='grid grid-cols-7 mb-4'>
+                <div className='grid grid-cols-7 mb-4 text-center'>
                     <div className='opacity-50'>
                         <BadgeIcon/>
                         <p>{student.uid}</p>

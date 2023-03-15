@@ -109,23 +109,20 @@ const registerStudentFirebase = async (project, student) => {
             promedio: student.promedio,
             signedUp: student.signedUp,
             type: student.type,
+            status: project.inscripcion === "Inscripción por IRIS" ? "RE" : "AP",
             uid: student.uid
         }
+        
         students.push(studentTemp)
 
         let payload = {
             ...project,
             students
         }
-        if(project.inscripcion === "Inscripción por IRIS"){
-            payload = {
-                ...payload,
-                occupied: project.occupied + 1
-            }
-        }
-        console.log(payload)
+        
 
-        let currentProject = {
+
+        let tempProject = {
             name: project.name,
             key: project.key,
             group: project.group,
@@ -143,10 +140,35 @@ const registerStudentFirebase = async (project, student) => {
             uid: project.uid
         }
 
+
         let userPayload = {
-            ...student,
-            currentProject
+            ...student
         }
+
+        if(project.inscripcion === "Inscripción por IRIS"){
+            payload = {
+                ...payload,
+                occupied: project.occupied + 1
+            }
+            userPayload = {
+                ...userPayload,
+                currentProject: tempProject
+            }
+        } else {
+            let appliedProjects = []
+            appliedProjects.push(tempProject)
+            if(student.appliedProjects) {
+                student.appliedProjects.forEach((item) => {
+                    appliedProjects.push(item)
+                })
+            }
+
+            userPayload = {
+                ...userPayload,
+                appliedProjects
+            }
+        }
+        console.log(payload)
         console.log(userPayload)
 
         await updateDoc(docRef, payload)
@@ -172,18 +194,111 @@ const unregisterStudentFirebase = async (project, student) => {
             ...project,
             students
         }
+        
+
+        let userPayload = {
+            ...student
+        }
+
         if(project.inscripcion === "Inscripción por IRIS"){
             payload = {
                 ...payload,
                 occupied: project.occupied - 1 < 0 ? 0 : project.occupied - 1 
             }
+            userPayload = {
+                ...userPayload,
+                currentProject: null
+            }
+        } else {
+            let appliedProjects = []
+            if(student.appliedProjects) {
+                student.appliedProjects.forEach((item) => {
+                    if(item.uid !== project.uid) {
+                        appliedProjects.push(item)
+                    }
+                    
+                })
+            }
+
+            userPayload = {
+                ...userPayload,
+                appliedProjects
+            }
         }
         console.log(payload)
+        console.log(userPayload)
 
+        await updateDoc(docRef, payload)
+        await updateDoc(userRef, userPayload)
+        return payload
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
+
+const acceptStudentFirebase = async (project, student) => {
+    try {
+        const docRef = doc(db, 'projects', project.uid)
+        const userRef = doc(db, 'users', student.uid)
+
+        let students = project.students
+        let studentTemp = {
+            carrera: student.carrera,
+            horas: student.horas,
+            mail: student.mail,
+            name: student.name,
+            phone: student.phone,
+            semestre: student.semestre,
+            promedio: student.promedio,
+            signedUp: student.signedUp,
+            type: student.type,
+            status: "RE",
+            uid: student.uid
+        }
+        students = students.filter((el) => el.uid !== student.uid)
+        students.push(studentTemp)
+
+        let payload = {
+            ...project,
+            students
+        }
+        
+
+
+        let currentProject = {
+            name: project.name,
+            key: project.key,
+            group: project.group,
+            crn: project.crn,
+            hours: project.hours,
+            inscripcion: project.inscripcion,
+            availability: project.availability,
+            occupied: payload.occupied,
+            duration: project.duration,
+            carrerasList: project.carrerasList,
+            modality: project.modality,
+            location: project.location,
+            company: project.company,
+            logoUrl: project.logoUrl,
+            uid: project.uid
+        }
+
+
+  
+        payload = {
+            ...payload,
+            occupied: project.occupied + 1
+        }
+
+        
         let userPayload = {
             ...student,
-            currentProject: null
+            currentProject,
+            appliedProjects: []
         }
+
+        console.log(payload)
         console.log(userPayload)
 
         await updateDoc(docRef, payload)
@@ -203,4 +318,5 @@ export {
     getAllProjects,
     registerStudentFirebase,
     unregisterStudentFirebase,
+    acceptStudentFirebase
 }

@@ -23,6 +23,7 @@ import {
     getUsersFirebase 
 } from '../database/funtions/auth'
 import { error } from 'console'
+import Project from '@/utils/interfaces/Project.interface'
 
 const AuthContext = createContext<any>({})
 
@@ -207,7 +208,44 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         });
     }
 
-    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, createAdmin, signupStudent, signupPartner, signupAdmin, getUsers, users, changePassword}}>
+    const setUserCurrentProject = (project:Project) => {
+        setUser({
+            ...user,
+            currentProject: project
+        })
+    }
+
+    const deleteUserCurrentProject = () => {
+        setUser({
+            ...user,
+            currentProject: null
+        })
+    }
+
+    const setUserAppliedProjects = (project:Project) => {
+        let data = []
+        data.push(project)
+        if(user.appliedProjects) {
+            user.appliedProjects.forEach((item:Project) => {
+                data.push(item)
+            })
+        }
+        setUser({
+            ...user,
+            appliedProjects: data
+        })
+    }
+
+    const deleteUserAppliedProject = (uid:string) => {
+        let data = [...user.appliedProjects]
+        data = data.filter((el:Project) => el.uid !== uid)
+        setUser({
+            ...user,
+            appliedProjects: data
+        })
+    }
+
+    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, createAdmin, signupStudent, signupPartner, signupAdmin, getUsers, users, changePassword, setUserCurrentProject, setUserAppliedProjects, deleteUserCurrentProject, deleteUserAppliedProject}}>
         {loading ? null : children}
     </AuthContext.Provider>
 }
