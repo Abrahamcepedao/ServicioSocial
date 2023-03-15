@@ -53,7 +53,9 @@ const Projects = () => {
               <div className='rounded-xl p-4 border border-primary mt-4'>
                   <h2 className='subtitle text-black dark:text-white border-b border-primary w-full pb-2'>Proyecto solicitados</h2>
                   {user.appliedProjects.length !== 0 && user.appliedProjects.map((item:IProject, i:number) => (
-                    <Project project={item}/>
+                    <div key={i}>
+                      <Project project={item}/>
+                    </div>
                   ))}
               </div>
             )}
