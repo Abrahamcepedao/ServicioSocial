@@ -3,28 +3,14 @@ import React, { useEffect, useState } from 'react';
 
 //Context
 import { useAuth } from '../../context/AuthContext'
-import { useProjects } from '@/context/ProjectsContext';
-
 //Material UI
-import { IconButton } from '@mui/material'
-import {Collapse} from '@mui/material';
-import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
-//Material UI - icons
-import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
-import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
-import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
-import ComputerRoundedIcon from '@mui/icons-material/ComputerRounded';
-import WatchLaterRoundedIcon from '@mui/icons-material/WatchLaterRounded';
-import InterpreterModeRoundedIcon from '@mui/icons-material/InterpreterModeRounded';
+//Components
+import Project from './CurrentProject';
 
-
-//interfaces
-import ProjectInt from '@/utils/interfaces/Project.interface';
-import Student from '@/utils/interfaces/Student.interface';
+//Interfaces
+import IProject from '@/utils/interfaces/Project.interface';
 
 //Material UI - Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -55,10 +41,30 @@ const Projects = () => {
 
 
     return (
-        <div>
-            <h2 className='subtitle text-black dark:text-white'>Proyecto actual</h2>
+        <div className=''>
+            {/* current project */}
+            <div className='rounded-xl p-4 border border-primary'>
+                <h2 className='subtitle text-black dark:text-white border-b border-primary w-full pb-2'>Proyecto actual</h2>
+                <Project project={user.currentProject}/>
+            </div>
 
-            <h2 className='subtitle text-black dark:text-white'>Proyectos pasados</h2>
+            {/* applied projects */}
+            {user.appliedProjects && (
+              <div className='rounded-xl p-4 border border-primary mt-4'>
+                  <h2 className='subtitle text-black dark:text-white border-b border-primary w-full pb-2'>Proyecto solicitados</h2>
+                  {user.appliedProjects.length !== 0 && user.appliedProjects.map((item:IProject, i:number) => (
+                    <Project project={item}/>
+                  ))}
+              </div>
+            )}
+            
+            {/* past projects */}
+            {/* <div className='bg-transparent rounded-xl p-4 border border-primary mt-4'>
+                <h2 className='subtitle text-black dark:text-white border-b border-primary w-full pb-2'>Proyectos pasados</h2>
+                <Project project={user.currentProject}/>
+                <Project project={user.currentProject}/>
+            </div> */}
+            
         </div>
     )
 }

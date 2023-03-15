@@ -10,26 +10,13 @@ import React, { useState, useEffect } from 'react'
 import Snackbar from '@mui/material/Snackbar';
 import { Theme, useTheme } from '@mui/material/styles';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { IconButton, Collapse, Tooltip } from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Chip from '@mui/material/Chip';
-import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 
 //Material UI - icons
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import DashboardCustomizeRoundedIcon from '@mui/icons-material/DashboardCustomizeRounded';
-import { CreateRounded, DeleteRounded } from '@mui/icons-material';
-import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
-
-//CSS
-import styles from '@/styles/Home.module.css'
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 
 //Components
 import SideBar from '@/components/global/Sidebar';
-import { TransparentInput } from '@/components/global/Select';
 import Student from '@/components/partner/Student';
 
 //Context
@@ -37,16 +24,12 @@ import { useAuth } from '@/context/AuthContext';
 import { useProjects } from '@/context/ProjectsContext';
 
 //data
-import carreras from '@/utils/constants/carreras';
-import claves from '@/utils/constants/claves';
-import duration from '@/utils/constants/duration';
-import hours from '@/utils/constants/hours';
-import modalities from '@/utils/constants/modalities';
-import inscripcion from '@/utils/constants/inscripcion';
+
 
 //interfaces
 import Project from '@/utils/interfaces/Project.interface';
 import StudentInt from '@/utils/interfaces/Student.interface';
+import IStudent from '@/utils/interfaces/Student.interface';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -57,31 +40,10 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-
-
 export default function Students() {
     //context
     const { user } = useAuth()
+    const { unregisterStudent, acceptStudent } = useProjects()
     const selectedProject:Project = useProjects().selectedProject
 
     //Material UI
@@ -94,6 +56,10 @@ export default function Students() {
     const [allStudents, setAllStudents] = useState<Array<StudentInt>>([])
     const [studentList, setStudentList] = useState<Array<StudentInt>>([])
 
+    //useState - open
+    const [state, setState] = useState({
+        open: false,
+    })
 
     //useState - alert open
     const [utils, setUtils] = useState({
@@ -107,14 +73,6 @@ export default function Students() {
 
     //useEffect
     useEffect(() => {
-      //console.log(user)
-      /* if(user) {
-        if(projects.length !== 0) {
-          setProjectsList(projects)
-        } else {
-          fecthProjects()
-        }
-      } */
       if(selectedProject !== null) {
         if(selectedProject.students.length !== 0) {
           setStudentList(selectedProject.students)
@@ -126,12 +84,101 @@ export default function Students() {
     },[])
 
 
+    /* handle alert close */
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setUtils({...utils, open: false});
+    };
+
+
     /* handle filter change */
     const handleFilterChange = (e:React.ChangeEvent<HTMLInputElement>) => {
       let temp:StudentInt[] = [...allStudents]
-      temp = temp.filter((el:StudentInt) => el.uid.toLocaleLowerCase().includes(e.target.value.toLocaleLowerCase()))
+      temp = temp.filter((el:StudentInt) => el.uid.toLocaleLowerCase().includes(e.target.value.toLocaleLowerCase()) || el.name.toLocaleLowerCase().includes(e.target.value.toLocaleLowerCase()) )
       setStudentList(temp)
       setUtils({...utils, filter: e.target.value})
+    }
+
+    /* handle unregister student */
+    const handleUnregisterClick = async(item:IStudent) => {
+      console.log(item)
+      const res = await unregisterStudent(selectedProject, item)
+        if(res) {
+            if(selectedProject.inscripcion === "Inscripción por IRIS") {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'success',
+                    message: "¡Se elimino el registro exitosamente!"
+                })
+            } else {
+                setUtils({
+                ...utils,
+                    open: true,
+                    severity: 'success',
+                    message: "¡Se rechazó la solicitud exitosamente!"
+                })
+            }
+            let data = [...allStudents]
+            data = data.filter((el:IStudent) => el.uid !== item.uid)
+            setAllStudents(data)
+            setStudentList(data)
+            setState({...state})
+        } else {
+            if(selectedProject.inscripcion === "Inscripción por IRIS") {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'error',
+                    message: "Ocurrió un error al eliminar el registro"
+                })
+            } else {
+                setUtils({
+                    ...utils,
+                    open: true,
+                    severity: 'error',
+                    message: "Ocurrió un error al rechazar la solicitud"
+                })
+            }
+            
+            setState({...state})
+        }
+    }
+
+
+    /* handle unregister student */
+    const handleAcceptClick = async(item:IStudent) => {
+      console.log(item)
+      const res = await acceptStudent(selectedProject, item)
+        if(res) {
+            setUtils({
+                ...utils,
+                open: true,
+                severity: 'success',
+                message: "¡Se aceptó la solicitud exitosamente!"
+            })
+            let data = [...allStudents]
+            data = data.filter((el:IStudent) => el.uid !== item.uid)
+            data.push({
+              ...item,
+              status: "RE"
+            })
+            setAllStudents(data)
+            setStudentList(data)
+            setState({...state})
+        } else {
+            setUtils({
+                  ...utils,
+                  open: true,
+                  severity: 'error',
+                  message: "Ocurrió un error al aceptar la solicitud"
+              })
+            
+            setState({...state})
+        }
     }
 
     return (
@@ -147,25 +194,63 @@ export default function Students() {
             <div className='lg:w-[calc(100%-176px)] min-h-screen bg-light dark:bg-dark lg:left-44 relative p-4 md:p-10 pb-20'>
                 {/* header */} 
                 <div className='flex justify-between items-center max-w-5xl m-auto mt-10'>
-                    <h2 className='title text-dark dark:text-light flex-1'>{selectedProject !== null ? selectedProject.name : "-"}</h2>
+                    {selectedProject !== null && (
+                      <div>
+                        <h2 className='subtitle text-black dark:text-white flex-1 mb-3'>{selectedProject.name}</h2>
+                        <div className='border border-primary rounded-2xl pl-3 pr-3 pt-2 pb-2 flex justify-start items-center w-24'>
+                            <PeopleAltRoundedIcon className='text-black dark:text-white mr-3'/>
+                            <p className='text-black dark:text-white flex-1'> {selectedProject.occupied + "/" + selectedProject.availability}</p>
+                        </div>
+                        
+                      </div>
+                    )}
+                    
                     <div className='flex justify-end items-center'>
                       <div className='filter__container'>
                           <SearchRoundedIcon/>
-                          <input placeholder='Busca por matricula' value={utils.filter} onChange={(e) => {handleFilterChange(e)}} className='filter__input'/>
+                          <input placeholder='Nombre o matricula' value={utils.filter} onChange={(e) => {handleFilterChange(e)}} className='filter__input'/>
                       </div>
                     </div>
                 </div>
 
                 {/* table with students */}
                 <div className='max-w-5xl m-auto mt-8'>
-                    {studentList.length !== 0 && studentList.map((student: StudentInt, i:number) => (
+                    <h2 className='subtitle2 text-black dark:text-white opacity-80'>Alumnos registrados</h2>
+                    {(studentList.length !== 0 && studentList.filter((el:StudentInt) => el.status === "RE").length !== 0) ? studentList.filter((el:StudentInt) => el.status === "RE").map((student: StudentInt, i:number) => (
                       <div key={i}>
-                        <Student student={student}/>
+                        <Student student={student} deleteStudent={handleUnregisterClick} acceptStudent={handleAcceptClick} projectType={selectedProject.inscripcion === "Inscripción por IRIS" ? "IRIS" : "Entrevista"}/>
                       </div>
-                    ))}
+                    )) : (
+                      <div className='rounded-xl p-5 bg-lightAlt dark:bg-darkAlt'>
+                        <h3 className='subtitle2'>No se encontraron alumnos registrados</h3>
+                      </div>
+                    )}  
+
+                    {selectedProject.inscripcion !== "Inscripción por IRIS" && (
+                      <>
+                        <h2 className='subtitle2 text-black dark:text-white mt-10 opacity-80'>Alumnos solicitantes</h2>
+                        {(studentList.length !== 0 && studentList.filter((el:StudentInt) => el.status === "AP").length !== 0) ? studentList.filter((el:StudentInt) => el.status === "AP").map((student: StudentInt, i:number) => (
+                          <div key={i}>
+                            <Student student={student} deleteStudent={handleUnregisterClick} acceptStudent={handleAcceptClick} projectType={selectedProject.inscripcion === "Inscripción por IRIS" ? "IRIS" : "Entrevista"}/>
+                          </div>
+                        )) : (
+                          <div className='rounded-xl p-5 bg-lightAlt dark:bg-darkAlt'>
+                            <h3 className='subtitle2'>No se encontraron alumnos solicitantes</h3>
+                          </div>
+                        )}
+                      </>  
+                    )}
                 </div>
 
             </div>
+
+            {/* alert */}
+            <Snackbar open={utils.open} autoHideDuration={4000} onClose={handleClose}>
+              {/* @ts-ignore */}
+              <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
+                {utils.message}
+              </Alert>
+            </Snackbar>
         </main>
       </>
     )

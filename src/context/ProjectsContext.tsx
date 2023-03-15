@@ -9,7 +9,8 @@ import {
     updateProjectFirebase,
     deleteProjectFirebase,
     registerStudentFirebase,
-    unregisterStudentFirebase
+    unregisterStudentFirebase,
+    acceptStudentFirebase
 } from '../database/funtions/projects'
 
 //Interfaces
@@ -131,6 +132,7 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         if(res !== false) {
             updateProjects(res)
             updateFavs(res)
+            
         } 
         return res
     }
@@ -141,6 +143,15 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         if(res !== false) {
             updateProjects(res)
             updateFavs(res)
+        } 
+        return res
+    }
+
+    /* accept student */
+    const acceptStudent = async(project: Project, student: Student) => {
+        const res = await acceptStudentFirebase(project, student)
+        if(res !== false) {
+            updateProjects(res)
         } 
         return res
     }
@@ -159,7 +170,8 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         addFav,
         deleteFav,
         registerStudent,
-        unregisterStudent
+        unregisterStudent,
+        acceptStudent
     }}>
         {children}
     </ProjectsContext.Provider>

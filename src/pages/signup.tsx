@@ -3,9 +3,10 @@ import Head from 'next/head'
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/router';
 
 //React
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 //Material UI
 import Snackbar from '@mui/material/Snackbar';
@@ -38,8 +39,11 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 export default function SignUp() {
+    //Router
+    const router = useRouter()
+
     //context
-    const { signup } = useAuth()
+    const { user, signup } = useAuth()
 
     //Theme
     const { theme } = useTheme()
@@ -62,6 +66,20 @@ export default function SignUp() {
       message: "",
       severity: "error"
     })
+
+    //useEffect
+    useEffect(() => {
+        if(user !== null && user !== undefined) {
+            if(user.type === "student") {
+              router.push('/student/dashboard')
+            } else if(user.type === "admin") {
+              router.push('/admin/dashboard')
+            } else {
+              router.push('/partner/dashboard')
+            }
+            
+        }
+    },[user])
 
     /* handle alert close */
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {

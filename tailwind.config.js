@@ -12,6 +12,7 @@ module.exports = {
       'darkAlt': '#1C2536',
       'light': '#f9fdff',
       'lightAlt': '#eff1f9',
+      'transparent': "rgba(255,255,255,0.015)",
       'primary': '#256EFF',
       'secondary': '#d72638',
       'terciary': '#6c969d',
@@ -45,7 +46,9 @@ module.exports = {
       'all': "#968d87",
       'student': "#d6192c",
       'partner': "#17c4be",
-      'admin': "#1973c6"
+      'admin': "#1973c6",
+      'primary': "#1976D1",
+      'transparent': "rgba(255,255,255,0.15)"
     },
     minWidth: {
       'xs': '40px',
