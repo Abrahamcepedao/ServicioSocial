@@ -127,7 +127,7 @@ export default function Login() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className='min-h-screen'>
-          <div className='flex flex-col items-center justify-between min-h-screen p-20'>
+          <div className='flex flex-col items-center justify-between min-h-screen p-20 bg-light dark:bg-dark'>
               <div className=''>
                 <Image src={theme === "light" ? Logo : LogoW} width={200} height={140} alt="Servicio Social"/>
                 {/* <ThemeToggler /> */}

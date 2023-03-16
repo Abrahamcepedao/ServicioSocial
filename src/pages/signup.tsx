@@ -134,7 +134,7 @@ export default function SignUp() {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className='p-5'>
+        <main className='p-5 bg-light dark:bg-dark'>
           <div className='flex flex-col items-center justify-between min-h-screen p-20'>
               <div className='mb-20'>
                 <Image src={theme === "light" ? Logo : LogoW} width={200} height={140} alt="Servicio Social"/>
