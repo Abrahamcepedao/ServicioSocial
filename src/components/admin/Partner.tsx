@@ -53,12 +53,6 @@ const Partner = ({partner}:AppProps) => {
       message: "",
       severity: "error"
     })
-
-    //useEffect
-    useEffect(() => {
-        console.log(partner)
-    },[])
-
     /* handle alert close */
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {

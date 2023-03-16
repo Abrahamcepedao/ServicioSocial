@@ -43,7 +43,7 @@ module.exports = {
       'dash6': "#ea6315",
     },
     borderColor: {
-      'all': "#968d87",
+      'all': "#e99517",
       'student': "#d6192c",
       'partner': "#17c4be",
       'admin': "#1973c6",

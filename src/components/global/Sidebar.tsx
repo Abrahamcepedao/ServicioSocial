@@ -11,15 +11,12 @@ import { useAuth } from '../../context/AuthContext'
 import Logo from '../../../public/logo.png'
 import LogoW from '../../../public/logo_w.png'
 
-//CSS
-
 //Material UI
 import { IconButton, Tooltip } from '@mui/material'
 
 //Material UI - icons
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
 import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
@@ -114,13 +111,13 @@ const SideBar = () => {
 
                 {/*  */}
                 <div className='pb-5'>
-                    <Link href={"/settings"}>
+                    {/* <Link href={"/settings"}>
                         <Tooltip title="Ajustes" placement='top'>
                             <IconButton>
                                 <SettingsRoundedIcon className="sidebar__icon text-black dark:text-white"/>
                             </IconButton>
                         </Tooltip>
-                    </Link>
+                    </Link> */}
                     <Tooltip title="Cerrar sesión" placement='top'>
                         <IconButton onClick={logout}>
                             <LogoutRoundedIcon className="sidebar__icon text-black dark:text-white"/>

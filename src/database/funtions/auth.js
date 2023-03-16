@@ -22,9 +22,25 @@ const addUser = async (user) => {
     }
 }
 
+const deleteUserFirebase = async(uid) => {
+    try {
+        const docRef = doc(db, 'users', uid)
+        await deleteDoc(docRef)
+        return true
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
+
 const addStudent = async (user) => {
     try {
         const docRef = doc(db, 'users', user.uid)
+        const snapshot = await getDoc(docRef)
+        if(snapshot.exists()){
+            console.log("Student exists..")
+            return false
+        } 
         const payload = {
             uid: user.uid,
             mail: user.mail,
@@ -246,6 +262,7 @@ const getUsersFirebase = async () => {
 export { 
     addUser, 
     getUser, 
+    deleteUserFirebase,
     addStudent, 
     addPartner, 
     addAdmin,

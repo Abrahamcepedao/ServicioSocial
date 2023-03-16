@@ -2,7 +2,31 @@ const carreras = [
   'ITC',
   'ITD',
   'IBT',
-  'IQ'
+  'IDM',
+  'IFI',
+  'INA',
+  'IAG',
+  'IAL',
+  'IDS',
+  'IRS',
+  'IE',
+  'IM',
+  'IMD',
+  'ARQ',
+  'IC',
+  'IQ', 
+  'LUB',
+  'LEC',
+  'LED',
+  'LRI',
+  'LTP',
+  'LAD',
+  'LC',
+  'LDI',
+  'LEI',
+  'LLE',
+  'LPE',
+  'LTM'
 ];
 
 export default carreras

@@ -14,6 +14,7 @@ import { auth } from '../database/firebase'
 import { 
     addUser, 
     getUser, 
+    deleteUserFirebase,
     addStudent, 
     signedUpStudent, 
     addPartner, 
@@ -94,7 +95,7 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
     const signupAdmin = async(mail:string, password:string) => {
         return await createUserWithEmailAndPassword(auth, mail, password).then(async (result) => {
             //get student and set data
-            const res = await signedUpPartner(mail)
+            const res = await signedUpAdmin(mail)
             if(res !== false) {
                 setUser(res)
             } else {
@@ -177,6 +178,11 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         return await addAdmin(temp)
     }
 
+    //delete user
+    const deleteUser = async(uid:string) => {
+        return await deleteUserFirebase(uid)
+    }
+
     //handle get users
     const getUsers = async() => {
         const res = await getUsersFirebase()
@@ -245,7 +251,7 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         })
     }
 
-    return <AuthContext.Provider value={{user, login, signup, logout, createStudent, createPartner, createAdmin, signupStudent, signupPartner, signupAdmin, getUsers, users, changePassword, setUserCurrentProject, setUserAppliedProjects, deleteUserCurrentProject, deleteUserAppliedProject}}>
+    return <AuthContext.Provider value={{user, login, signup, logout, deleteUser, createStudent, createPartner, createAdmin, signupStudent, signupPartner, signupAdmin, getUsers, users, changePassword, setUserCurrentProject, setUserAppliedProjects, deleteUserCurrentProject, deleteUserAppliedProject}}>
         {loading ? null : children}
     </AuthContext.Provider>
 }

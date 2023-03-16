@@ -56,11 +56,6 @@ const Student = ({student}:AppProps) => {
       severity: "error"
     })
 
-    //useEffect
-    useEffect(() => {
-        console.log(student)
-    },[])
-
     /* handle alert close */
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {
@@ -77,7 +72,7 @@ const Student = ({student}:AppProps) => {
                 {/* upper */}
                 <div className='flex justify-between items-center mb-4'>
                     <div>
-                        <h3 className='subtitle'>{student.name}</h3>
+                        <h3 className='subtitle text-black dark:text-white'>{student.name}</h3>
                     </div>
                     <div className='flex flex-col items-end'>
                       <div className='bg-student pt-1 pb-1 pl-4 w-10 mb-2 pr-4 rounded-xl'></div>

@@ -14,7 +14,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 //Material UI - icons
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
@@ -29,8 +29,10 @@ import PendingActionsRoundedIcon from '@mui/icons-material/PendingActionsRounded
 import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import PsychologyRoundedIcon from '@mui/icons-material/PsychologyRounded';
-import { AttachFileRounded } from '@mui/icons-material';
+import { AttachFileRounded, FileUpload } from '@mui/icons-material';
 import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded';
+import UploadRoundedIcon from '@mui/icons-material/UploadRounded';
+import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 
 //Components
 import SideBar from '@/components/global/Sidebar';
@@ -40,6 +42,16 @@ import { useAuth } from '@/context/AuthContext';
 import Student from '@/components/admin/Student';
 import Partner from '@/components/admin/Partner';
 import Admin from '@/components/admin/Admin';
+
+/* XLSX */
+import readXlsxFile from 'read-excel-file'
+
+/* Papaparse */
+import Papa from "papaparse";
+
+//Interfaces
+import IStudent from '@/utils/interfaces/Student.interface';
+import IStudentFile from '@/utils/interfaces/StudentFile.interfase';
 
 //Alert
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -51,7 +63,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export default function Users() {
     //context
-    const { createStudent, createPartner, createAdmin, users, getUsers } = useAuth()
+    const { createStudent, createPartner, createAdmin, deleteUser, users, getUsers } = useAuth()
 
     //router
     const router = useRouter()
@@ -97,6 +109,20 @@ export default function Users() {
       severity: "error",
       collapse: false
     })
+
+    //useState - file
+    const [fileData, setFileData] = useState({
+      file: "",
+      fileName: "",
+      loading: false,
+      collapse: false,
+      users: [],
+      uploading: false
+    })
+    const [file, setFile] = useState<File | null>(null);
+    const [fileUsers, setFileUsers] = useState<Array<IStudentFile>>([])
+    const [number, setNumber] = useState<number>(0);
+    const [intervalID, setIntervalID] = useState<number>(0);
 
     //useEffect
     useEffect(() => {
@@ -156,6 +182,222 @@ export default function Users() {
           open: true,
         })
       }
+    }
+
+    /* Functions - handle file upload */
+    const handleFileChange = async(e:React.ChangeEvent<HTMLInputElement>) => {
+      console.log(e.target.files[0]);
+      if(e.target.files[0] !== undefined) {
+          setFile(e.target.files[0])
+
+          let files = e.target.files; //get files
+          var file = files[0];
+
+          //validate file
+          if(file.type !== 'text/csv') {
+            const schema = {
+              'matricula': {
+                prop: 'matricula',
+                type: String,
+                required: true
+              },
+              'nombre': {
+                prop: 'nombre',
+                type: String,
+                required: true
+              },
+              'mail': {
+                prop: 'mail',
+                type: String,
+                required: true
+              },
+              'telefono': {
+                prop: 'telefono',
+                type: String,
+                required: true
+              },
+              'semestre': {
+                prop: 'semestre',
+                type: Number,
+                required: true
+              },
+              'carrera': {
+                prop: 'carrera',
+                type: String,
+                required: true
+              },
+              'horas': {
+                prop: 'horas',
+                type: Number,
+                required: true
+              },
+              'promedio': {
+                prop: 'promedio',
+                type: Number,
+                required: true
+              },
+
+            }
+            readXlsxFile(file, {schema}).then((rows) => {
+              console.log('rows: ', rows);
+
+              setFileData({
+                ...fileData,
+                fileName: file.name,
+                loading: true,
+                collapse: true,
+              });
+
+              if(rows.rows.length > 0) {
+                //@ts-ignore
+                setUsersNoFile(rows.rows);
+              }
+              //return rows;
+            }).catch((error) => {
+              console.log('error: ', error);
+              setFileData({
+                ...fileData,
+                loading: false,
+                fileName: file.name,
+                collapse: false
+              });
+              return;
+            });
+            
+
+            
+          } else {
+
+            setFileData({
+              ...fileData,
+              fileName: file.name,
+              collapse: true,
+            });
+
+            setUsersFile(file);
+          }
+      }
+    };
+
+    const setUsersNoFile = (data: IStudentFile[]) => {
+      console.log('useers: ', data);
+      setFileUsers(data)
+      let num = 0;
+
+      const interval: any = setInterval(() => {
+          if(num === data.length) {
+            clearInterval(intervalID);
+          } else {
+            num = num + 1;
+            setNumber(num);
+          }
+
+      }, 0.001)
+
+      setIntervalID(interval);
+    }
+
+    const setUsersFile = (file: File) => {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        //@ts-ignore
+        complete: function (results:any) {
+          console.log(results.data)
+          setFileUsers(results.data)
+
+          let num = 0;
+
+          const interval: any = setInterval(() => {
+              if(num === results.data.length) {
+                clearInterval(intervalID);
+              } else {
+                num = num + 1;
+                setNumber(num);
+              }
+
+          }, 5)
+
+          setIntervalID(interval);
+        },
+      });
+    }
+
+    const uploadUsers = async() => {
+      let tempAddedUsers:IStudent[] = []
+      
+      const promises = fileUsers.map(async(student:IStudentFile) => {
+        const res = await createStudent(
+          student.mail,
+          student.telefono,
+          student.nombre,
+          student.matricula,
+          student.carrera,
+          Number(student.semestre),
+          Number(student.horas),
+          Number(student.promedio)
+        )
+        if(res !== false) {
+          tempAddedUsers.push(res)
+        }
+      })
+      await Promise.all(promises)
+
+      console.log(tempAddedUsers)
+      return tempAddedUsers
+    }
+
+    const handleUploadUsers = async() => {
+      setFileData({
+        ...fileData,
+        uploading: !fileData.uploading
+      })
+
+      let tempAddedUsers = await uploadUsers()
+      console.log(tempAddedUsers)
+      //add to users list
+      let tempUsers = [...state.users]
+      tempAddedUsers.forEach((item) => {
+        tempUsers.push(item)
+      })
+
+      setFileData({
+        ...fileData,
+        uploading: false,
+        loading: false,
+        collapse: false,
+        fileName: ""
+      })
+      setFile(null)
+
+      console.log(tempUsers)
+      setState({
+        ...state,
+        users: tempUsers,
+        usersList: tempUsers
+      })
+
+      setUtils({
+        ...utils,
+        open: true,
+        message: `Se registraron ${tempAddedUsers.length} alumnos exitosamente`,
+        severity: "success"
+      })
+
+      
+    }
+
+    /* handle cancel upload users */
+    const handleCancelUploadUsers = () => {
+      setFileData({
+        ...fileData,
+        fileName: "",
+        uploading: false,
+        loading: false,
+        collapse: false
+      })
+      setNumber(0)
+      setFile(null)
     }
 
     /* const handle input change */
@@ -363,6 +605,11 @@ export default function Users() {
       
     }
 
+    /* handle delete user */
+    const handleUserDelete = (uid:string) => {
+
+    }
+
     return (
       <>
         <Head>
@@ -377,7 +624,7 @@ export default function Users() {
 
               {/* header */}
               <div className='flex justify-between items-center max-w-5xl m-auto mt-10'>
-                <h2 className='title text-dark dark:text-light flex-1'>Edita los usuarios</h2>
+                <h2 className='title text-black dark:text-white flex-1'>Edita los usuarios</h2>
                 <div className='flex justify-end items-center'>
                   <div className='filter__container'>
                     <SearchRoundedIcon/>
@@ -397,9 +644,41 @@ export default function Users() {
                       </IconButton>
                     </Tooltip>
                   )}
+
+                  <Tooltip title="Cargar archivo" placement='top'>
+                    <label htmlFor='file' className="">
+                      <UploadRoundedIcon className='text-black dark:text-white cursor-pointer duration-500 transition-transform hover:scale-110'/>
+                    </label>
+                  </Tooltip>
+                  <input name='file' id='file' type="file" onChange={(e) => {handleFileChange(e)}} className="file__input"/>
+                  
                   
                 </div>
               </div>
+
+              <Collapse in={fileData.collapse}>
+                <div className='max-w-5xl m-auto mt-10 flex justify-end items-center'>
+                  {/* users */}
+                  <div className='bg-lightAlt dark:bg-darkAlt rounded-xl p-5 w-56'>
+                    <div className='flex items-center justify-center mb-4'>
+                      <PeopleRoundedIcon className='text-black dark:text-white mr-3'/>
+                      <p className='text-black dark:text-white'>{number}</p>
+                    </div>
+                    
+                    <div className='flex items-center justify-center'>
+                      <button onClick={handleCancelUploadUsers} className='button__sm bg-secondary text-white mr-4'>Cancelar</button>
+                      <button onClick={handleUploadUsers} className='button__sm bg-primary text-white'>Registar</button>
+                    </div>
+                  </div>
+
+                  {/* progress */}
+                  {fileData.uploading && (
+                    <div className='ml-4'>
+                      <CircularProgress />
+                    </div>
+                  )}
+                </div>
+              </Collapse>
 
               {/* add user */}
               <Collapse in={utils.collapse}>
@@ -586,20 +865,20 @@ export default function Users() {
                 <div className='flex justify-start items-start flex-1'>
                   <div 
                     onClick={() => {handleUserTypeClick("all")}}
-                    className='rounded-xl border-2 border-all pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                    style={{background: state.userType === "all" ? "#968d87" : "none"}}>Todos</div>
+                    className='rounded-xl border-2 border-all pl-4 pr-4 pt-1 pb-1 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "all" ? "#e99517" : "none", color: state.userType === "all" ? "#f7e7cf" : "#e99517"}}>Todos</div>
                   <div 
                     onClick={() => {handleUserTypeClick("student")}}
-                    className='rounded-xl border-2 border-student pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                    style={{background: state.userType === "student" ? "#d6192c" : "none"}}>Alumnos</div>
+                    className='rounded-xl border-2 border-student pl-4 pr-4 pt-1 pb-1 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "student" ? "#d6192c" : "none", color: state.userType === "student" ? "#f9d9dc" : "#d6192c"}}>Alumnos</div>
                   <div 
                     onClick={() => {handleUserTypeClick("partner")}}
-                    className='rounded-xl border-2 border-partner pl-4 pr-4 pt-2 pb-2 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                    style={{background: state.userType === "partner" ? "#17c4be" : "none"}}>Socios</div>
+                    className='rounded-xl border-2 border-partner pl-4 pr-4 pt-1 pb-1 mr-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "partner" ? "#17c4be" : "none", color: state.userType === "partner" ? "#defcfa" : "#17c4be"}}>Socios</div>
                   <div 
                     onClick={() => {handleUserTypeClick("admin")}}
-                    className='rounded-xl border-2 border-admin pl-4 pr-4 pt-2 pb-2 cursor-pointer transition-transform duration-500 hover:scale-105' 
-                    style={{background: state.userType === "admin" ? "#1973c6" : "none"}}>Admins</div>
+                    className='rounded-xl border-2 border-admin pl-4 pr-4 pt-1 pb-1 cursor-pointer transition-transform duration-500 hover:scale-105' 
+                    style={{background: state.userType === "admin" ? "#1973c6" : "none", color: state.userType === "admin" ? "#e5f0f9" : "#1973c6"}}>Admins</div>
                 </div>
                 <div>
                     <Tooltip title="Filtrar" placement='top'>
@@ -609,9 +888,17 @@ export default function Users() {
                     </Tooltip>
                 </div>
               </div>
+
+              {/* length */}
+              <div className='max-w-5xl m-auto mb-1s mt-5'>
+                <div className='w-32 flex items-center'>
+                  <PeopleRoundedIcon className='text-black dark:text-white mr-3'/>
+                  <p className='text-black dark:text-white'>{state.usersList.length + "/" +  state.users.length}</p>
+                </div>
+              </div>
               
               {/* list of users */}
-              <div className='max-w-5xl m-auto mt-10'>
+              <div className='max-w-5xl m-auto mt-2'>
                   {state.usersList.length !== 0 && state.usersList.map((item:any, i:number) => (
                     <div key={i}>
                       {item.type === "student" && (
@@ -630,7 +917,7 @@ export default function Users() {
             </div>
 
             {/* alert */}
-            <Snackbar open={utils.open} autoHideDuration={4000} onClose={handleClose}>
+            <Snackbar open={utils.open} autoHideDuration={6000} onClose={handleClose}>
               {/* @ts-ignore */}
               <Alert onClose={handleClose} severity={utils.severity} sx={{ width: '100%' }}>
                 {utils.message}
