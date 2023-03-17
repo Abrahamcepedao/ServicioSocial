@@ -29,7 +29,7 @@ const updateProjectFirebase = async (project) => {
 
         console.log(payload)
         await updateDoc(docRef, payload)
-        return true
+        return payload
     } catch(error) {
         console.log(error)
         return false

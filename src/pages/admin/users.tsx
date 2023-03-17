@@ -839,10 +839,10 @@ export default function Users() {
                         <div className='file__container '>
                           <p>Imagen logotipo</p>
                           <div className='file__input__container'>
-                            <label htmlFor='file' className='file__input__btn bg-primary'>
+                            <label htmlFor='file_img' className='file__input__btn bg-primary'>
                               <AttachFileRounded/>
                             </label>
-                            <input className='file__input' name='file' id="file" type="file" onChange={(e) => {handleImgChange(e)}}/>
+                            <input className='file__input' name='file_img' id="file_img" type="file" onChange={(e) => {handleImgChange(e)}}/>
                             <p>{partner.fileName.length > 20 ? partner.fileName.substring(0,20) + "..." : partner.fileName}</p>
                           </div>
                         </div>

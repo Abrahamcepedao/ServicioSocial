@@ -100,7 +100,7 @@ const addPartner = async (partner) => {
 
         const file = partner.file
         const storageRef = ref(storage, `file/${partner.uid}/${partner.fileName}`)
-
+        console.log(storageRef)
         const uploadTask = uploadBytesResumable(storageRef, file)
         uploadTask.on("state_changed",
             (snapshot) => {
