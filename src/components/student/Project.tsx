@@ -262,9 +262,9 @@ const Project = ({project, deleteFromFav}:AppProps) => {
                     {user.type === "student" && (
                         <>
                             {state.isRegistered ? (
-                                <button onClick={() => {handleUnregisterClick()}} className='button__sm bg-secondary text-white'>{project.inscripcion === "Inscripción por IRIS" ? "Eliminar registro" : "Eliminar solicitud"}</button>
+                                <button onClick={() => {handleUnregisterClick()}} className='button__sm bg-secondary text-white max-h-16'>{project.inscripcion === "Inscripción por IRIS" ? "Eliminar registro" : "Eliminar solicitud"}</button>
                             ) : (
-                                <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white'>{project.inscripcion === "Inscripción por IRIS" ? "Registrar experiencia" : "Solicitar experiencia"}</button>
+                                <button onClick={() => {handleRegisterClick()}} className='button__sm bg-primary text-white max-h-16'>{project.inscripcion === "Inscripción por IRIS" ? "Registrar experiencia" : "Solicitar experiencia"}</button>
                             )}
                         </>
                     )}

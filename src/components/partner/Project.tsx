@@ -157,11 +157,13 @@ const Project = ({project, deleteProject}:AppProps) => {
                             <p>CRN: <b>{project.crn}</b></p>
                             <p>Duración: <b>{project.duration}</b></p>
                             <p>Ubicación: <b>{project.location}</b></p>
-                            <p>Carreras:  
-                                {project.carrerasList.length !== 0 && project.carrerasList.map((item, i) => (
-                                    <b key={i}> {item} {i === project.carrerasList.length - 1 ? "" : "·"}</b>
-                                ))}
-                            </p>
+                            {project.carrerasList && (
+                                <p>Carreras:  
+                                    {project.carrerasList.length !== 0 && project.carrerasList.map((item, i) => (
+                                        <b key={i}> {item} {i === project.carrerasList.length - 1 ? "" : "·"}</b>
+                                    ))}
+                                </p>
+                            )}
                         </div>
                     </div>
                 </Collapse>

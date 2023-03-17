@@ -243,6 +243,7 @@ export default function Projects() {
 
             let temp:ProjectInt[] = [...projectsList]
             temp.push(res)
+            console.log(res)
             setProjectsList(temp)
           } else {
             setUtils({
