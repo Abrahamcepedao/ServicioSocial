@@ -84,8 +84,11 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         let data = [...projects]
         let index = data.findIndex((el:Project) => el.uid === project.uid)
         if(index !== -1) {
-            data[index].students = project.students
-            data[index].occupied = project.occupied
+            /* data[index].students = project.students
+            data[index].occupied = project.occupied */
+            data[index] = {
+                ...project
+            }
         }
         console.log(data)
         setProjects(data)
@@ -93,7 +96,13 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
 
     /* update project info */
     const updateProject = async (project:Project) => {
-        return await updateProjectFirebase(project)
+        const res = await updateProjectFirebase(project)
+        if(res !== false) {
+            updateProjects(project)
+            return true
+        }
+        return false
+        
     }
 
     /* delete project */

@@ -12,7 +12,7 @@ const addProjectFirebase = async (project) => {
         }
         console.log(payload)
         await setDoc(docRef, payload)
-        return true
+        return payload
     } catch(error) {
         console.log(error)
         return false

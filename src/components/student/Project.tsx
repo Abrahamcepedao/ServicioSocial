@@ -245,7 +245,7 @@ const Project = ({project, deleteFromFav}:AppProps) => {
                     </div>
                     <div className='opacity-50'>
                         <Groups2RoundedIcon/>
-                        <p>{"0/" + project.availability}</p>
+                        <p>{project.occupied + "/" + project.availability}</p>
                     </div>
                     <div className='opacity-50'>
                         <WatchLaterRoundedIcon/>

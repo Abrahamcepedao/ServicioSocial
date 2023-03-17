@@ -561,7 +561,9 @@ export default function Projects() {
                 <div className='max-w-5xl m-auto mt-8'>
                     {projectsList.length !== 0 && projectsList.map((project: ProjectInt, i:number) => (
                       <div key={i}>
-                        <Project project={project} deleteProject={handleDeleteProject}/>
+                        {project && (
+                          <Project project={project} deleteProject={handleDeleteProject}/>
+                        )}
                       </div>
                     ))}
                 </div>

@@ -208,7 +208,7 @@ export default function Edit() {
             location: formData.location,
             company: user.company,
             logoUrl: user.fileUrl,
-            uid: user.uid + "-" + Date.now(),
+            uid: selectedProject.uid,
             occupied: selectedProject.occupied,
             students: selectedProject.students
           }
