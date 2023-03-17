@@ -127,7 +127,7 @@ const Project = ({project, deleteProject}:AppProps) => {
                 <div className='grid grid-cols-6 mb-4'>
                     <div className='opacity-50'>
                         <Groups2RoundedIcon/>
-                        <p>{"0/" + project.availability}</p>
+                        <p>{project.occupied + "/" + project.availability}</p>
                     </div>
                     <div className='opacity-50'>
                         <WatchLaterRoundedIcon/>
