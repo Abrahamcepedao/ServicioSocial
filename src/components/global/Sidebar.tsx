@@ -6,6 +6,7 @@ import Link from 'next/link'
 
 //Context
 import { useAuth } from '../../context/AuthContext'
+import { useProjects } from '@/context/ProjectsContext';
 
 //Logo image
 import Logo from '../../../public/logo.png'
@@ -41,7 +42,15 @@ const SideBar = () => {
 
     //context
     const { logout, user } = useAuth()
+    const { logoutUser } = useProjects()
 
+
+    /* handle logout */
+    const handleLogout = () => {
+        //clear local storage and context
+        logout()
+        logoutUser()    
+    }
 
     return (
         <>
@@ -119,7 +128,7 @@ const SideBar = () => {
                         </Tooltip>
                     </Link> */}
                     <Tooltip title="Cerrar sesión" placement='top'>
-                        <IconButton onClick={logout}>
+                        <IconButton onClick={handleLogout}>
                             <LogoutRoundedIcon className="sidebar__icon text-black dark:text-white"/>
                         </IconButton>
                     </Tooltip>

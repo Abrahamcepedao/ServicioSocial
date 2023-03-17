@@ -157,6 +157,13 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
     }
 
 
+    /* handle logout out */
+    const logoutUser = () => {
+        setFavs([])
+        setProjects([])
+        setSelectedProject(null)
+    }
+
     return <ProjectsContext.Provider value={{
         projects, 
         addProject, 
@@ -171,7 +178,8 @@ export const ProjectsContextProvider = ({children}: {children:React.ReactNode}) 
         deleteFav,
         registerStudent,
         unregisterStudent,
-        acceptStudent
+        acceptStudent,
+        logoutUser
     }}>
         {children}
     </ProjectsContext.Provider>

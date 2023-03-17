@@ -79,7 +79,10 @@ const signedUpStudent = async (matricula) => {
             carrera: temp.carrera,
             semestre: temp.semestre,
             horas: temp.horas,
+            promedio: temp.promedio,
             type: temp.type,
+            currentProject: null,
+            appliedProjects: [],
             signedUp: true
         }
         await setDoc(docRef, payload)

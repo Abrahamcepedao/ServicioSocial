@@ -52,11 +52,15 @@ const Projects = () => {
             {user.appliedProjects && (
               <div className='rounded-xl p-4 border border-primary mt-4'>
                   <h2 className='subtitle text-black dark:text-white border-b border-primary w-full pb-2'>Proyecto solicitados</h2>
-                  {user.appliedProjects.length !== 0 && user.appliedProjects.map((item:IProject, i:number) => (
+                  {user.appliedProjects.length !== 0 ? user.appliedProjects.map((item:IProject, i:number) => (
                     <div key={i}>
                       <Project project={item}/>
                     </div>
-                  ))}
+                  )) : (
+                    <div className='mt-4 opacity-60'>
+                        <h4>Aún no tienes un proyectos solicitados</h4>
+                    </div>
+                  )}
               </div>
             )}
             

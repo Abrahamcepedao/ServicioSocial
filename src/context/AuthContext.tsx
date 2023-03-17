@@ -52,18 +52,16 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
         return () => unsubscribe()
     }, [])
 
-    const signup = async (mail:string, password:string, name:string, phone:string, type: string) => {
+    const signup = async (mail:string, password:string, type: string) => {
 
         return await createUserWithEmailAndPassword(auth, mail, password).then((result) => {
             const temp = {
                 uid: result.user.uid,
                 mail,
-                name,
-                phone,
                 type
             }
             console.log(temp)
-            setUser(temp)
+            //setUser(temp)
             addUser(temp)
         })
     }
@@ -129,7 +127,9 @@ export const AuthContextProvider = ({children}: {children:React.ReactNode}) => {
 
     //handle logout
     const logout = async() => {
+        localStorage.clear()
         setUser(null)
+        setUsers([])
         await signOut(auth)
     }
 

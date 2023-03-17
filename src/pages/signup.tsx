@@ -43,7 +43,7 @@ export default function SignUp() {
     const router = useRouter()
 
     //context
-    const { user, signup } = useAuth()
+    const { user, signupStudent, signupPartner, signupAdmin } = useAuth()
 
     //Theme
     const { theme } = useTheme()
@@ -51,8 +51,6 @@ export default function SignUp() {
     //useState - formData
     const [formData, setFormData] = useState({
       mail: "",
-      name: "",
-      phone: "",
       matricula: "",
       key: "",
       password: "",
@@ -122,7 +120,14 @@ export default function SignUp() {
     const handleSignUp = (e:React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if(verifyForm()) {
-        signup(formData.mail, formData.password, formData.name, formData.phone, formData.type)
+        if(formData.type === "student") {
+          signupStudent(formData.mail, formData.password, formData.matricula)
+        } else if(formData.type === "partner") {
+          signupPartner(formData.mail, formData.password, formData.key)
+        } else {
+          signupAdmin(formData.mail, formData.password)
+        }
+        
       }
     }
 
@@ -167,14 +172,6 @@ export default function SignUp() {
                             className="input"
                           />
                         </div>
-                        <div className='input__container '>
-                          <PersonRoundedIcon/>
-                          <input 
-                            name='name' placeholder='Ingrese su nombre completo'
-                            value={formData.name} onChange={(e) => {handleInputChange(e)}}
-                            className="input"
-                          />
-                        </div>
                         {formData.type === "student" && (
                           <div className='input__container '>
                             <PersonRoundedIcon/>
@@ -197,14 +194,6 @@ export default function SignUp() {
                             />
                           </div>
                         )}
-                        <div className='input__container '>
-                          <LocalPhoneRoundedIcon/>
-                          <input 
-                            name='phone' placeholder='Ingrese su teléfono'
-                            value={formData.phone} onChange={(e) => {handleInputChange(e)}}
-                            className="input"
-                          />
-                        </div>
                         <div className='input__container '>
                           <LockRoundedIcon/>
                           <input 
